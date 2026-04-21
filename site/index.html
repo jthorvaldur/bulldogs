@@ -159,8 +159,10 @@
       display: flex;
       gap: 10px;
       align-items: baseline;
+      text-decoration: none;
     }
     .toc-item:hover { background: var(--bg-card); color: var(--text); }
+    .toc-list li { list-style: none; }
     .toc-num {
       font-size: var(--size-sm);
       color: var(--text-faint);
@@ -182,9 +184,12 @@
       padding: 16px 20px;
       background: var(--bg-card);
       border-radius: var(--radius);
-      transition: background 0.2s;
+      transition: background 0.2s, border-color 0.2s;
+      text-decoration: none;
+      color: inherit;
+      border: 1px solid transparent;
     }
-    .framework-step:hover { background: var(--bg-card-hover); }
+    .framework-step:hover { background: var(--bg-card-hover); border-color: var(--border-hover); color: inherit; }
     .step-num {
       width: 36px;
       height: 36px;
@@ -245,7 +250,7 @@
     <ul class="nav-links">
       <li><a href="handbook.html">Handbook</a></li>
       <li><a href="#visualizations">Explore</a></li>
-      <li><a href="#framework">Framework</a></li>
+      <li><a href="community.html">Community</a></li>
       <li><a href="about.html">About</a></li>
     </ul>
   </div>
@@ -363,50 +368,50 @@
       <div class="toc-part">
         <div class="toc-part-title">I. Understanding the Problem</div>
         <ul class="toc-list">
-          <li class="toc-item"><span class="toc-num">1.</span> Clinical Framing: Why Bulldogs Get Yeast Infections</li>
-          <li class="toc-item"><span class="toc-num">2.</span> The Diagnostic Question That Must Be Answered</li>
+          <li><a href="handbook.html#ch1" class="toc-item"><span class="toc-num">1.</span> Clinical Framing: Why Bulldogs Get Yeast Infections</a></li>
+          <li><a href="handbook.html#ch2" class="toc-item"><span class="toc-num">2.</span> The Diagnostic Question That Must Be Answered</a></li>
         </ul>
       </div>
 
       <div class="toc-part">
         <div class="toc-part-title">II. Diagnostic Workup</div>
         <ul class="toc-list">
-          <li class="toc-item"><span class="toc-num">3.</span> Confirming Malassezia with Cutaneous Cytology</li>
-          <li class="toc-item"><span class="toc-num">4.</span> Classifying the Clinical Pattern</li>
-          <li class="toc-item"><span class="toc-num">5.</span> Investigating the Underlying Cause</li>
-          <li class="toc-item"><span class="toc-num">6.</span> Recommended Laboratory Panel</li>
-          <li class="toc-item"><span class="toc-num">7.</span> Diagnostic Sequence</li>
+          <li><a href="handbook.html#ch3" class="toc-item"><span class="toc-num">3.</span> Confirming Malassezia with Cutaneous Cytology</a></li>
+          <li><a href="handbook.html#ch4" class="toc-item"><span class="toc-num">4.</span> Classifying the Clinical Pattern</a></li>
+          <li><a href="handbook.html#ch5" class="toc-item"><span class="toc-num">5.</span> Investigating the Underlying Cause</a></li>
+          <li><a href="handbook.html#ch6" class="toc-item"><span class="toc-num">6.</span> Recommended Laboratory Panel</a></li>
+          <li><a href="handbook.html#ch7" class="toc-item"><span class="toc-num">7.</span> Diagnostic Sequence</a></li>
         </ul>
       </div>
 
       <div class="toc-part">
         <div class="toc-part-title">III. Treatment</div>
         <ul class="toc-list">
-          <li class="toc-item"><span class="toc-num">8.</span> First-Line Topical Therapy: Evidence-Based</li>
-          <li class="toc-item"><span class="toc-num">9.</span> Community-Tested Approaches: Evaluated</li>
-          <li class="toc-item"><span class="toc-num">10.</span> Recommended Integrated Low-Stress Protocol</li>
-          <li class="toc-item"><span class="toc-num">11.</span> Systemic Antifungal Therapy</li>
-          <li class="toc-item"><span class="toc-num">12.</span> Pruritus Management</li>
+          <li><a href="handbook.html#ch8" class="toc-item"><span class="toc-num">8.</span> First-Line Topical Therapy: Evidence-Based</a></li>
+          <li><a href="handbook.html#ch9" class="toc-item"><span class="toc-num">9.</span> Community-Tested Approaches: Evaluated</a></li>
+          <li><a href="handbook.html#ch10" class="toc-item"><span class="toc-num">10.</span> Recommended Integrated Low-Stress Protocol</a></li>
+          <li><a href="handbook.html#ch11" class="toc-item"><span class="toc-num">11.</span> Systemic Antifungal Therapy</a></li>
+          <li><a href="handbook.html#ch12" class="toc-item"><span class="toc-num">12.</span> Pruritus Management</a></li>
         </ul>
       </div>
 
       <div class="toc-part">
         <div class="toc-part-title">IV. Environment & Nutrition</div>
         <ul class="toc-list">
-          <li class="toc-item"><span class="toc-num">13.</span> Indoor Environmental Management</li>
-          <li class="toc-item"><span class="toc-num">14.</span> Outdoor and Contact Allergen Management</li>
-          <li class="toc-item"><span class="toc-num">15.</span> Skin Fold Hygiene: The Non-Negotiable</li>
-          <li class="toc-item"><span class="toc-num">16.</span> Nutritional Considerations</li>
-          <li class="toc-item"><span class="toc-num">17.</span> Environmental Toxin Assessment</li>
+          <li><a href="handbook.html#ch13" class="toc-item"><span class="toc-num">13.</span> Indoor Environmental Management</a></li>
+          <li><a href="handbook.html#ch14" class="toc-item"><span class="toc-num">14.</span> Outdoor and Contact Allergen Management</a></li>
+          <li><a href="handbook.html#ch15" class="toc-item"><span class="toc-num">15.</span> Skin Fold Hygiene: The Non-Negotiable</a></li>
+          <li><a href="handbook.html#ch16" class="toc-item"><span class="toc-num">16.</span> Nutritional Considerations</a></li>
+          <li><a href="handbook.html#ch17" class="toc-item"><span class="toc-num">17.</span> Environmental Toxin Assessment</a></li>
         </ul>
       </div>
 
       <div class="toc-part">
         <div class="toc-part-title">V. Long-Term Management</div>
         <ul class="toc-list">
-          <li class="toc-item"><span class="toc-num">18.</span> Maintenance Framework</li>
-          <li class="toc-item"><span class="toc-num">19.</span> Allergen-Specific Immunotherapy</li>
-          <li class="toc-item"><span class="toc-num">20.</span> When to Escalate to Specialist Care</li>
+          <li><a href="handbook.html#ch18" class="toc-item"><span class="toc-num">18.</span> Maintenance Framework</a></li>
+          <li><a href="handbook.html#ch19" class="toc-item"><span class="toc-num">19.</span> Allergen-Specific Immunotherapy</a></li>
+          <li><a href="handbook.html#ch20" class="toc-item"><span class="toc-num">20.</span> When to Escalate to Specialist Care</a></li>
         </ul>
       </div>
     </div>
@@ -419,34 +424,34 @@
     <div class="section-label">The Complete Framework</div>
     <h2 class="section-title">7 Steps to Healthy Skin</h2>
     <div class="framework-steps" style="max-width:700px;">
-      <div class="framework-step">
+      <a href="handbook.html#ch3" class="framework-step">
         <div class="step-num">1</div>
         <div class="step-text">Confirm Malassezia on cytology — <strong>do not treat blind</strong></div>
-      </div>
-      <div class="framework-step">
+      </a>
+      <a href="handbook.html#ch8" class="framework-step">
         <div class="step-num">2</div>
         <div class="step-text">Treat with evidence-based topicals (miconazole-CHG shampoo first-line) + adjuncts</div>
-      </div>
-      <div class="framework-step">
+      </a>
+      <a href="handbook.html#ch5" class="framework-step">
         <div class="step-num">3</div>
         <div class="step-text">Investigate the underlying cause — <strong>atopy is #1 in bulldogs</strong></div>
-      </div>
-      <div class="framework-step">
+      </a>
+      <a href="handbook.html#ch12" class="framework-step">
         <div class="step-num">4</div>
         <div class="step-text">Manage itch to break the scratch-infection cycle (Cytopoint is the community game-changer)</div>
-      </div>
-      <div class="framework-step">
+      </a>
+      <a href="handbook.html#ch15" class="framework-step">
         <div class="step-num">5</div>
         <div class="step-text">Maintain with daily fold care, weekly baths, environmental optimization</div>
-      </div>
-      <div class="framework-step">
+      </a>
+      <a href="handbook.html#ch19" class="framework-step">
         <div class="step-num">6</div>
         <div class="step-text">Consider immunotherapy for long-term resolution — commitment required, transformative results</div>
-      </div>
-      <div class="framework-step">
+      </a>
+      <a href="handbook.html#ch2" class="framework-step">
         <div class="step-num">7</div>
         <div class="step-text">Never stop asking why. <strong>The yeast is the symptom, not the disease.</strong></div>
-      </div>
+      </a>
     </div>
   </div>
 </section>
@@ -460,26 +465,26 @@
       Every community-contributed insight is evaluated against the peer-reviewed veterinary dermatology literature before publication.
     </p>
     <div class="evidence-grid">
-      <div class="evidence-card">
+      <a href="viz/evidence_levels.html#validated" class="evidence-card" style="text-decoration:none; cursor:pointer;">
         <div class="badge badge-validated" style="font-size:var(--size-sm); padding:4px 12px;">Validated</div>
         <div class="evidence-desc" style="margin-top:12px;">Supported by peer-reviewed veterinary literature</div>
-      </div>
-      <div class="evidence-card">
+      </a>
+      <a href="viz/evidence_levels.html#plausible" class="evidence-card" style="text-decoration:none; cursor:pointer;">
         <div class="badge badge-plausible" style="font-size:var(--size-sm); padding:4px 12px;">Plausible</div>
         <div class="evidence-desc" style="margin-top:12px;">Sound mechanism but limited direct clinical evidence</div>
-      </div>
-      <div class="evidence-card">
+      </a>
+      <a href="viz/evidence_levels.html#unsubstantiated" class="evidence-card" style="text-decoration:none; cursor:pointer;">
         <div class="badge badge-community" style="font-size:var(--size-sm); padding:4px 12px;">Unsubstantiated</div>
         <div class="evidence-desc" style="margin-top:12px;">No evidence basis found; not confirmable</div>
-      </div>
-      <div class="evidence-card">
+      </a>
+      <a href="viz/evidence_levels.html#harmful" class="evidence-card" style="text-decoration:none; cursor:pointer;">
         <div class="badge badge-harmful" style="font-size:var(--size-sm); padding:4px 12px;">Harmful</div>
         <div class="evidence-desc" style="margin-top:12px;">Could cause harm — toxicity, delayed care, dangerous interaction</div>
-      </div>
-      <div class="evidence-card">
+      </a>
+      <a href="viz/evidence_levels.html#needs-context" class="evidence-card" style="text-decoration:none; cursor:pointer;">
         <div class="badge badge-clinical" style="font-size:var(--size-sm); padding:4px 12px;">Needs Context</div>
         <div class="evidence-desc" style="margin-top:12px;">Depends on specific clinical circumstances</div>
-      </div>
+      </a>
     </div>
   </div>
 </section>

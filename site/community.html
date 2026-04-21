@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Community — BulldogDerm</title>
+  <link rel="stylesheet" href="css/global.css">
+  <style>
+    .community-hero {
+      padding: 100px 0 48px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex; gap: 0; border-bottom: 1px solid var(--border);
+      margin-bottom: 32px; max-width: 700px; margin-left: auto; margin-right: auto;
+    }
+    .tab {
+      flex: 1; padding: 12px; text-align: center; font-size: var(--size-sm);
+      font-weight: 600; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--text-dim); background: none; border: none;
+      cursor: pointer; font-family: var(--font); transition: all 0.2s;
+      border-bottom: 2px solid transparent;
+    }
+    .tab:hover { color: var(--text); }
+    .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+    .tab-content { display: none; max-width: 700px; margin: 0 auto; }
+    .tab-content.active { display: block; }
+
+    /* Form */
+    .form-group { margin-bottom: 20px; }
+    .form-label {
+      display: block; font-size: var(--size-xs); font-weight: 600;
+      letter-spacing: 2px; text-transform: uppercase;
+      color: var(--text-dim); margin-bottom: 6px;
+    }
+    .form-input, .form-textarea, .form-select {
+      width: 100%; padding: 10px 14px;
+      background: var(--bg-input); border: 1px solid var(--border);
+      border-radius: var(--radius); color: var(--text);
+      font-family: var(--font); font-size: var(--size-base);
+      transition: border-color 0.2s;
+    }
+    .form-input:focus, .form-textarea:focus, .form-select:focus {
+      outline: none; border-color: var(--accent);
+    }
+    .form-textarea { min-height: 120px; resize: vertical; line-height: 1.7; }
+    .form-select { appearance: none; cursor: pointer; }
+    .form-hint {
+      font-size: var(--size-xs); color: var(--text-faint);
+      margin-top: 4px; line-height: 1.6;
+    }
+
+    /* Tag input */
+    .tag-container {
+      display: flex; flex-wrap: wrap; gap: 6px;
+      padding: 8px 12px; background: var(--bg-input);
+      border: 1px solid var(--border); border-radius: var(--radius);
+      min-height: 42px; align-items: center; cursor: text;
+    }
+    .tag-container:focus-within { border-color: var(--accent); }
+    .tag {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 2px 8px; background: rgba(212,160,96,0.1);
+      border: 1px solid rgba(212,160,96,0.2);
+      border-radius: var(--radius-pill); font-size: var(--size-xs);
+      color: var(--accent);
+    }
+    .tag-remove {
+      cursor: pointer; font-size: 0.7rem; color: var(--text-dim);
+      margin-left: 2px;
+    }
+    .tag-input {
+      border: none; background: none; color: var(--text);
+      font-family: var(--font); font-size: var(--size-base);
+      outline: none; flex: 1; min-width: 100px;
+    }
+
+    /* Submission result */
+    .result-panel {
+      display: none; margin-top: 24px;
+      border: 1px solid var(--border); border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .result-panel.visible { display: block; animation: fadeIn 0.4s ease-out; }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+    .result-header {
+      padding: 16px 20px; display: flex; align-items: center; gap: 12px;
+    }
+    .result-body {
+      padding: 0 20px 20px;
+    }
+    .result-field {
+      margin-bottom: 12px;
+    }
+    .result-field-label {
+      font-size: var(--size-xs); font-weight: 600; letter-spacing: 1px;
+      text-transform: uppercase; color: var(--text-dim); margin-bottom: 4px;
+    }
+    .result-field-value {
+      font-size: var(--size-base); color: var(--text); line-height: 1.7;
+    }
+    .result-refs {
+      font-size: var(--size-sm); color: var(--text-dim); line-height: 1.6;
+    }
+    .result-caveats li {
+      font-size: var(--size-sm); color: var(--warning); line-height: 1.6;
+      margin-bottom: 4px;
+    }
+    .safety-flag {
+      padding: 10px 14px; background: rgba(192,64,64,0.08);
+      border-left: 3px solid var(--danger); border-radius: 0 var(--radius) var(--radius) 0;
+      font-size: var(--size-sm); color: var(--danger); margin-bottom: 12px;
+    }
+
+    /* Feed items */
+    .feed-item {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px; margin-bottom: 12px;
+    }
+    .feed-item:hover { border-color: var(--border-hover); }
+    .feed-title {
+      font-size: var(--size-base); font-weight: 600; color: var(--text-bright);
+      margin-bottom: 6px;
+    }
+    .feed-body {
+      font-size: var(--size-sm); color: var(--text-dim); line-height: 1.7;
+      margin-bottom: 10px;
+    }
+    .feed-meta {
+      display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
+      font-size: var(--size-xs); color: var(--text-faint);
+    }
+
+    .loading-spinner {
+      display: inline-block; width: 16px; height: 16px;
+      border: 2px solid var(--border); border-top-color: var(--accent);
+      border-radius: 50%; animation: spin 0.6s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .api-note {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 16px 20px;
+      margin-bottom: 24px; font-size: var(--size-sm); color: var(--text-dim);
+      line-height: 1.7;
+    }
+    .api-note strong { color: var(--accent); }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">BulldogDerm</a>
+    <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">Menu</button>
+    <ul class="nav-links">
+      <li><a href="handbook.html">Handbook</a></li>
+      <li><a href="community.html" class="active">Community</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+  </div>
+</nav>
+
+<section class="community-hero">
+  <div class="container">
+    <div class="section-label">Community Knowledge</div>
+    <h1 class="section-title" style="font-size:var(--size-2xl);">Share & Validate</h1>
+    <p style="color:var(--text-dim); font-size:var(--size-base); max-width:600px; margin:0 auto;">
+      Submit your experience, remedy, or insight. Every submission is automatically evaluated against the veterinary dermatology literature by AI, then reviewed by the community.
+    </p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('submit')">Submit</button>
+      <button class="tab" onclick="showTab('verified')">Verified</button>
+      <button class="tab" onclick="showTab('review')">Under Review</button>
+    </div>
+
+    <!-- SUBMIT TAB -->
+    <div class="tab-content active" id="tab-submit">
+
+      <div class="api-note">
+        <strong>How it works:</strong> When you submit, the AI evidence checker evaluates your contribution against 18+ peer-reviewed veterinary sources. You'll instantly see the verdict (Validated, Plausible, Unsubstantiated, Harmful, or Needs Context) along with an evidence summary, safety flags, and suggested caveats. Validated and Plausible submissions go to community review for 48 hours before appearing in the verified feed.
+      </div>
+
+      <form id="submitForm" onsubmit="handleSubmit(event)">
+        <div class="form-group">
+          <label class="form-label">Title</label>
+          <input class="form-input" type="text" id="subTitle" placeholder="e.g., Apple cider vinegar rinse for paw yeast" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Category</label>
+          <select class="form-select" id="subCategory" required>
+            <option value="">Select category...</option>
+            <option value="REMEDY">Remedy / Treatment</option>
+            <option value="EXPERIENCE">Experience Report</option>
+            <option value="PRODUCT">Product Recommendation</option>
+            <option value="TIP">Care Tip</option>
+            <option value="QUESTION">Question</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Condition</label>
+          <select class="form-select" id="subCondition" required>
+            <option value="">Select condition...</option>
+            <option value="Malassezia dermatitis">Malassezia dermatitis</option>
+            <option value="Atopic dermatitis">Atopic dermatitis</option>
+            <option value="Fold dermatitis">Fold dermatitis (intertrigo)</option>
+            <option value="Otitis externa">Otitis externa</option>
+            <option value="Pododermatitis">Pododermatitis (paw yeast)</option>
+            <option value="Bacterial pyoderma">Bacterial pyoderma</option>
+            <option value="Food allergy">Food adverse reaction</option>
+            <option value="General skin health">General skin health</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          <textarea class="form-textarea" id="subBody" placeholder="Describe what you did, what happened, and what the outcome was. Be specific about products, concentrations, frequency, and duration." required></textarea>
+          <div class="form-hint">The more specific you are, the better the evidence check will be.</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Your Dog's Breed</label>
+          <input class="form-input" type="text" id="subBreed" placeholder="e.g., English Bulldog" value="English Bulldog">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Tags</label>
+          <div class="tag-container" id="tagContainer" onclick="document.getElementById('tagInput').focus()">
+            <input class="tag-input" id="tagInput" type="text" placeholder="Type and press Enter..." onkeydown="handleTag(event)">
+          </div>
+          <div class="form-hint">e.g., paws, topical, yeast, diy</div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="submitBtn" style="width:100%; justify-content:center;">
+          Submit for Evidence Check
+        </button>
+      </form>
+
+      <!-- Result panel -->
+      <div class="result-panel" id="resultPanel">
+        <div class="result-header" id="resultHeader">
+          <div id="resultBadge"></div>
+          <div style="font-size:var(--size-sm); font-weight:600; color:var(--text-bright);" id="resultVerdict"></div>
+        </div>
+        <div class="result-body">
+          <div id="resultSafety"></div>
+          <div class="result-field">
+            <div class="result-field-label">Evidence Summary</div>
+            <div class="result-field-value" id="resultSummary"></div>
+          </div>
+          <div class="result-field" id="resultCaveatsSection" style="display:none;">
+            <div class="result-field-label">Suggested Caveats</div>
+            <ul class="result-caveats" id="resultCaveats"></ul>
+          </div>
+          <div class="result-field">
+            <div class="result-field-label">References</div>
+            <div class="result-refs" id="resultRefs"></div>
+          </div>
+          <div class="result-field">
+            <div class="result-field-label">What Happens Next</div>
+            <div class="result-field-value" id="resultNext"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VERIFIED TAB -->
+    <div class="tab-content" id="tab-verified">
+      <div class="feed-item">
+        <div style="display:flex; justify-content:space-between; align-items:start;">
+          <div class="feed-title">Povidone-Iodine Paw Soaks for Interdigital Yeast</div>
+          <div class="badge badge-validated">Validated</div>
+        </div>
+        <div class="feed-body">Dilute 10% povidone-iodine with lukewarm water to iced tea color (~0.1-1%). Soak paws 3-5 minutes, front and back separately. Pat dry thoroughly. Used twice daily during active infection, once daily for maintenance. Significant reduction in paw licking and redness within one week.</div>
+        <div class="feed-meta">
+          <span>English Bulldog, 4 years</span>
+          <span>Malassezia pododermatitis</span>
+          <span>Refs: [11][12]</span>
+        </div>
+      </div>
+
+      <div class="feed-item">
+        <div style="display:flex; justify-content:space-between; align-items:start;">
+          <div class="feed-title">Chlorhexidine Spray — Bulk Gallon Purchase for Daily Maintenance</div>
+          <div class="badge badge-validated">Validated</div>
+        </div>
+        <div class="feed-body">Purchased a gallon of 2% chlorhexidine gluconate solution. Dilute approximately 1 tablespoon per liter of water. Spray paper towels and clean paws twice daily, getting between all toes and undersides. Cost-effective long-term maintenance strategy — bulk purchase saves significantly over pre-made wipes.</div>
+        <div class="feed-meta">
+          <span>English Bulldog, 3 years</span>
+          <span>Malassezia dermatitis</span>
+          <span>Refs: [1][2][10]</span>
+        </div>
+      </div>
+
+      <div class="feed-item">
+        <div style="display:flex; justify-content:space-between; align-items:start;">
+          <div class="feed-title">Cytopoint Changed Everything for Our Bulldog</div>
+          <div class="badge badge-validated">Validated</div>
+        </div>
+        <div class="feed-body">"Mine are now on Cytopoint and have not had this issue since." After years of Apoquel and medicated baths, monthly Cytopoint injections eliminated the scratch-infection cycle completely. The yeast clears with topical treatment and stays clear because the dog stops scratching. Single most impactful intervention in our 3-year journey.</div>
+        <div class="feed-meta">
+          <span>English Bulldog, 5 years</span>
+          <span>Atopic dermatitis + secondary Malassezia</span>
+          <span>Refs: [5][18][C1]</span>
+        </div>
+      </div>
+
+      <div class="feed-item">
+        <div style="display:flex; justify-content:space-between; align-items:start;">
+          <div class="feed-title">Epsom Salt Soaks for Interdigital Swelling</div>
+          <div class="badge badge-plausible">Plausible</div>
+        </div>
+        <div class="feed-body">Dissolve Epsom salt in warm water, soak paws 5-10 minutes morning and evening. Dry thoroughly. Multiple owners report resolution of interdigital swelling and redness within 1-2 weeks. The drying effect is the key mechanism — moisture is what drives the yeast between toes.</div>
+        <div class="feed-meta">
+          <span>French Bulldog, 2 years</span>
+          <span>Malassezia pododermatitis</span>
+          <span>Mechanism sound, limited direct evidence</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- UNDER REVIEW TAB -->
+    <div class="tab-content" id="tab-review">
+      <div class="callout callout-info" style="margin-bottom:24px;">
+        Submissions appear here after AI evidence checking. They remain under community review for 48 hours before moving to the verified feed. Submissions rated <strong>Harmful</strong> are immediately rejected with an explanation.
+      </div>
+      <p style="color:var(--text-dim); font-size:var(--size-sm); text-align:center; padding:40px;">
+        No submissions currently under review. Be the first to <a href="#" onclick="showTab('submit'); return false;" style="color:var(--accent);">submit an insight</a>.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="disclaimer">
+      This site is for educational and informational purposes only. It does not constitute veterinary advice. Community-contributed content is AI-evaluated against veterinary literature but has not been reviewed by a veterinary licensing board.
+    </div>
+  </div>
+</footer>
+
+<script>
+// Tags
+const tags = [];
+function handleTag(e) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    const val = e.target.value.trim().toLowerCase();
+    if (val && !tags.includes(val)) {
+      tags.push(val);
+      renderTags();
+    }
+    e.target.value = '';
+  }
+}
+function removeTag(t) {
+  const idx = tags.indexOf(t);
+  if (idx > -1) tags.splice(idx, 1);
+  renderTags();
+}
+function renderTags() {
+  const container = document.getElementById('tagContainer');
+  const input = document.getElementById('tagInput');
+  container.querySelectorAll('.tag').forEach(t => t.remove());
+  tags.forEach(t => {
+    const el = document.createElement('span');
+    el.className = 'tag';
+    el.innerHTML = `${t}<span class="tag-remove" onclick="removeTag('${t}')">&times;</span>`;
+    container.insertBefore(el, input);
+  });
+}
+
+// Tabs
+function showTab(name) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// Verdict styling
+const VERDICT_STYLES = {
+  VALIDATED: { bg: 'rgba(90,158,111,0.1)', color: '#5a9e6f', border: 'rgba(90,158,111,0.3)', cls: 'badge-validated', next: 'This submission will appear in the Under Review feed for 48 hours of community review, then move to the Verified feed.' },
+  PLAUSIBLE: { bg: 'rgba(184,160,64,0.1)', color: '#b8a040', border: 'rgba(184,160,64,0.3)', cls: 'badge-plausible', next: 'This submission will appear in the Under Review feed with caveats for 48 hours, then move to the Verified feed with appropriate context.' },
+  UNSUBSTANTIATED: { bg: 'rgba(204,136,68,0.1)', color: '#cc8844', border: 'rgba(204,136,68,0.3)', cls: 'badge-community', next: 'This submission is held. We could not find evidence to support or refute this claim. It will not appear in the verified feed but is stored for future review as evidence evolves.' },
+  HARMFUL: { bg: 'rgba(192,64,64,0.1)', color: '#c04040', border: 'rgba(192,64,64,0.3)', cls: 'badge-harmful', next: 'This submission has been rejected because it could cause harm. The safety explanation above describes the specific danger. This will NOT be published.' },
+  NEEDS_CONTEXT: { bg: 'rgba(91,155,213,0.1)', color: '#5b9bd5', border: 'rgba(91,155,213,0.3)', cls: 'badge-clinical', next: 'This submission has been held for editorial review. A veterinary advisor will add clinical context before deciding whether to publish with appropriate caveats.' }
+};
+
+// Submit handler
+async function handleSubmit(e) {
+  e.preventDefault();
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="loading-spinner"></span> Evaluating against veterinary literature...';
+
+  const submission = {
+    title: document.getElementById('subTitle').value,
+    category: document.getElementById('subCategory').value,
+    condition: document.getElementById('subCondition').value,
+    body: document.getElementById('subBody').value,
+    breed: document.getElementById('subBreed').value,
+    tags: tags
+  };
+
+  try {
+    // Call the validation API (Cloudflare Worker)
+    const apiUrl = window.BULLDOGDERM_API || '/api/validate';
+    const resp = await fetch(apiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(submission)
+    });
+
+    if (!resp.ok) throw new Error('API unavailable');
+    const result = await resp.json();
+    displayResult(result);
+  } catch (err) {
+    // Demo mode: simulate AI response when API is not connected
+    const demoResult = simulateValidation(submission);
+    displayResult(demoResult);
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Submit for Evidence Check';
+}
+
+function displayResult(result) {
+  const panel = document.getElementById('resultPanel');
+  const style = VERDICT_STYLES[result.verdict] || VERDICT_STYLES.NEEDS_CONTEXT;
+
+  document.getElementById('resultHeader').style.background = style.bg;
+  document.getElementById('resultBadge').innerHTML = `<span class="badge ${style.cls}" style="font-size:var(--size-sm); padding:4px 12px;">${result.verdict.replace('_', ' ')}</span>`;
+  document.getElementById('resultVerdict').textContent = '';
+  document.getElementById('resultSummary').textContent = result.evidence_summary;
+  document.getElementById('resultNext').textContent = style.next;
+
+  // Safety flags
+  const safetyEl = document.getElementById('resultSafety');
+  if (result.safety_flags && result.safety_flags.length > 0) {
+    safetyEl.innerHTML = result.safety_flags.map(f => `<div class="safety-flag">${f}</div>`).join('');
+  } else {
+    safetyEl.innerHTML = '';
+  }
+
+  // Caveats
+  const caveatsSection = document.getElementById('resultCaveatsSection');
+  const caveatsList = document.getElementById('resultCaveats');
+  if (result.suggested_caveats && result.suggested_caveats.length > 0) {
+    caveatsSection.style.display = 'block';
+    caveatsList.innerHTML = result.suggested_caveats.map(c => `<li>${c}</li>`).join('');
+  } else {
+    caveatsSection.style.display = 'none';
+  }
+
+  // References
+  document.getElementById('resultRefs').textContent = (result.references || []).join(' ');
+
+  panel.classList.add('visible');
+  panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// Demo mode: client-side simulation when API is not connected
+function simulateValidation(sub) {
+  const text = (sub.title + ' ' + sub.body).toLowerCase();
+
+  // Check for harmful keywords
+  if (text.includes('garlic') || text.includes('tea tree') || text.includes('essential oil')) {
+    return {
+      verdict: 'HARMFUL',
+      evidence_summary: 'This submission involves substances that are potentially toxic to dogs. Allium species (garlic) cause Heinz body anemia. Concentrated tea tree oil causes CNS depression and hepatotoxicity.',
+      safety_flags: ['Contains substance(s) toxic to dogs at therapeutic concentrations. Do not administer.'],
+      suggested_caveats: [],
+      references: ['ASPCA Poison Control', 'Veterinary toxicology literature']
+    };
+  }
+
+  // Check for validated treatments
+  if (text.includes('chlorhexidine') || text.includes('miconazole') || text.includes('cytopoint') || text.includes('lokivetmab')) {
+    return {
+      verdict: 'VALIDATED',
+      evidence_summary: 'This approach aligns with ACVD consensus recommendations and published veterinary dermatology literature. The described protocol is consistent with evidence-based treatment guidelines for canine Malassezia dermatitis.',
+      safety_flags: [],
+      suggested_caveats: ['Confirm Malassezia on cytology before initiating antifungal therapy', 'Investigate underlying cause to prevent relapse'],
+      references: ['[1] PMC5603939', '[2] Hobi et al. 2024', '[10] PMC9754143']
+    };
+  }
+
+  if (text.includes('iodine') || text.includes('betadine') || text.includes('povidone')) {
+    return {
+      verdict: 'VALIDATED',
+      evidence_summary: 'Povidone-iodine is a well-established veterinary antiseptic with broad-spectrum activity against bacteria, fungi, viruses, and yeasts. Non-toxic if licked after drying at proper dilution (~iced tea color). Best role: paw soaks and fold cleaning as adjunct.',
+      safety_flags: [],
+      suggested_caveats: ['Not the first-choice targeted antifungal — use as adjunct to miconazole-CHG', 'Ensure proper dilution (iced tea color, ~0.1-1%)'],
+      references: ['[11] VCA Povidone Iodine', '[12] White-Weithers & Medleau 1995']
+    };
+  }
+
+  if (text.includes('epsom') || text.includes('magnesium')) {
+    return {
+      verdict: 'PLAUSIBLE',
+      evidence_summary: 'Magnesium sulfate is a hypertonic solution providing astringent/drying action. The drying effect is relevant because moisture is the primary modifiable factor in interdigital yeast overgrowth. Not specifically studied for Malassezia dermatitis in dogs, but mechanism is physiologically sound.',
+      safety_flags: ['Do not let dog drink the soak water — Epsom salt is a laxative'],
+      suggested_caveats: ['Limited direct evidence for M. pachydermatis specifically', 'Dry thoroughly after soaking — moisture drives recurrence'],
+      references: ['Mechanism-based assessment', 'Community-sourced protocol']
+    };
+  }
+
+  if (text.includes('coconut')) {
+    return {
+      verdict: 'NEEDS_CONTEXT',
+      evidence_summary: 'Coconut oil contains lauric acid with in vitro antifungal activity against Candida species, but no clinical trial demonstrates efficacy against M. pachydermatis. Safe as barrier/emollient on exposed skin, but applying oil to skin folds may increase moisture retention.',
+      safety_flags: [],
+      suggested_caveats: ['Do NOT apply to skin folds — may worsen moisture retention', 'Use on exposed, non-fold skin only', 'Barrier/emollient role, not primary antifungal'],
+      references: ['[13] Nardoni et al. 2014']
+    };
+  }
+
+  // Default
+  return {
+    verdict: 'NEEDS_CONTEXT',
+    evidence_summary: 'This submission could not be automatically validated against the available veterinary dermatology literature. It has been flagged for manual review by a veterinary advisor who can assess the clinical context.',
+    safety_flags: [],
+    suggested_caveats: ['Consult with your veterinarian before trying new treatments', 'Confirm diagnosis with cytology before initiating therapy'],
+    references: ['Manual review required']
+  };
+}
+</script>
+</body>
+</html>

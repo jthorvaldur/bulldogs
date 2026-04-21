@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Evidence Levels — BulldogDerm</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #0a0a0a; color: #d0d0d0;
+      font-family: 'JetBrains Mono', monospace;
+      min-height: 100vh;
+    }
+    .header {
+      position: sticky; top: 0; z-index: 10;
+      padding: 16px 24px;
+      background: rgba(10,10,10,0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid #1e1e1e;
+      display: flex; align-items: center; gap: 16px;
+    }
+    .back { font-size: 0.65rem; color: #777; text-decoration: none; letter-spacing: 2px; text-transform: uppercase; }
+    .back:hover { color: #d4a060; }
+    .title { font-size: 0.75rem; font-weight: 600; color: #d4a060; letter-spacing: 3px; text-transform: uppercase; }
+
+    .container { max-width: 860px; margin: 0 auto; padding: 32px 24px 80px; }
+
+    /* Filter tabs */
+    .filter-bar {
+      display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 32px;
+      position: sticky; top: 52px; z-index: 5;
+      background: #0a0a0a; padding: 12px 0;
+    }
+    .filter-btn {
+      padding: 6px 14px; font-family: inherit; font-size: 0.6rem;
+      font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+      border-radius: 20px; cursor: pointer; transition: all 0.2s;
+      border: 1px solid #333; background: transparent; color: #888;
+    }
+    .filter-btn:hover { border-color: #555; color: #ccc; }
+    .filter-btn.active { border-color: var(--c, #d4a060); color: var(--c, #d4a060); background: var(--bg, rgba(212,160,96,0.1)); }
+
+    /* Level sections */
+    .level-section {
+      margin-bottom: 40px; scroll-margin-top: 120px;
+    }
+    .level-header {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 16px; padding-bottom: 12px;
+      border-bottom: 1px solid #1e1e1e;
+    }
+    .level-badge {
+      padding: 4px 12px; font-size: 0.6rem; font-weight: 600;
+      letter-spacing: 1px; text-transform: uppercase; border-radius: 20px;
+    }
+    .level-desc {
+      font-size: 0.7rem; color: #888; line-height: 1.7;
+      margin-bottom: 16px; max-width: 700px;
+    }
+
+    /* Item cards */
+    .item-card {
+      background: #111; border: 1px solid #1e1e1e; border-radius: 6px;
+      padding: 16px 20px; margin-bottom: 8px;
+      transition: border-color 0.2s;
+    }
+    .item-card:hover { border-color: #2a2a2a; }
+    .item-name {
+      font-size: 0.8rem; font-weight: 600; color: #e0e0e0; margin-bottom: 6px;
+    }
+    .item-detail {
+      font-size: 0.65rem; color: #777; line-height: 1.7;
+    }
+    .item-ref {
+      font-size: 0.55rem; color: #555; margin-top: 6px;
+    }
+    .item-action {
+      display: inline-block; margin-top: 8px; font-size: 0.55rem;
+      font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+      padding: 2px 8px; border-radius: 10px;
+    }
+
+    .disclaimer {
+      font-size: 0.5rem; color: #444; line-height: 1.8;
+      border-top: 1px solid #1e1e1e; padding-top: 20px; margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <a href="../index.html" class="back">Home</a>
+  <div class="title">Evidence Levels</div>
+</div>
+
+<div class="container">
+
+  <div class="filter-bar">
+    <button class="filter-btn active" style="--c:#d4a060; --bg:rgba(212,160,96,0.1);" onclick="showAll()">All</button>
+    <button class="filter-btn" style="--c:#5a9e6f; --bg:rgba(90,158,111,0.1);" onclick="filter('validated')">Validated</button>
+    <button class="filter-btn" style="--c:#b8a040; --bg:rgba(184,160,64,0.1);" onclick="filter('plausible')">Plausible</button>
+    <button class="filter-btn" style="--c:#cc8844; --bg:rgba(204,136,68,0.1);" onclick="filter('unsubstantiated')">Unsubstantiated</button>
+    <button class="filter-btn" style="--c:#c04040; --bg:rgba(192,64,64,0.1);" onclick="filter('harmful')">Harmful</button>
+    <button class="filter-btn" style="--c:#5b9bd5; --bg:rgba(91,155,213,0.1);" onclick="filter('needs-context')">Needs Context</button>
+  </div>
+
+  <!-- VALIDATED -->
+  <div class="level-section" id="validated" data-level="validated">
+    <div class="level-header">
+      <div class="level-badge" style="background:rgba(90,158,111,0.15); color:#5a9e6f; border:1px solid rgba(90,158,111,0.3);">Validated</div>
+      <span style="font-size:0.7rem; color:#5a9e6f; font-weight:500;">Publish to verified feed with evidence summary</span>
+    </div>
+    <div class="level-desc">Supported by peer-reviewed veterinary literature. The claim is directly backed by published clinical studies, ACVD consensus statements, or established veterinary dermatology textbooks.</div>
+
+    <div class="item-card">
+      <div class="item-name">2% Miconazole + 2% Chlorhexidine Shampoo</div>
+      <div class="item-detail">Dual-action antifungal + broad antiseptic. ACVD consensus recommendation as first-line topical therapy for canine Malassezia dermatitis. 10-minute contact time, twice weekly.</div>
+      <div class="item-ref">References: [1][2][10] — ACVD consensus, PMC5603939, PMC9754143</div>
+      <div class="item-action" style="background:rgba(90,158,111,0.1); color:#5a9e6f;">Strong — ACVD Consensus</div>
+    </div>
+
+    <div class="item-card">
+      <div class="item-name">Chlorhexidine 2% Daily Spray Protocol</div>
+      <div class="item-detail">Dilute chlorhexidine gluconate solution for daily paw and fold maintenance between baths. Essentially the ACVD-recommended protocol adapted for daily use. Multiple community reports of significant improvement.</div>
+      <div class="item-ref">References: [1][2][10] — Community-validated, evidence-supported</div>
+      <div class="item-action" style="background:rgba(90,158,111,0.1); color:#5a9e6f;">Strong — Community + Literature</div>
+    </div>
+
+    <div class="item-card">
+      <div class="item-name">Lokivetmab (Cytopoint) for Pruritus</div>
+      <div class="item-detail">Monoclonal antibody targeting IL-31. 94% treatment success by Day 7, 98% by Day 28, 100% by Day 56 in prospective study (n=62). 47% success within 24 hours. Community-validated as the single most impactful intervention for itch management.</div>
+      <div class="item-ref">References: [5][18] — Gober et al. 2022, PMC9343842</div>
+      <div class="item-action" style="background:rgba(90,158,111,0.1); color:#5a9e6f;">Strong — Clinical Trial Data</div>
+    </div>
+
+    <div class="item-card">
+      <div class="item-name">Allergen-Specific Immunotherapy (ASIT)</div>
+      <div class="item-detail">Only treatment addressing underlying immune dysfunction in atopic dermatitis. 60-80% success rate. Textbook DACVD-managed protocol: allergy testing, dietary allergen removal, escalating immunotherapy injections.</div>
+      <div class="item-ref">References: [5][6] — Hensel et al. 2015, community case study validated</div>
+      <div class="item-action" style="background:rgba(90,158,111,0.1); color:#5a9e6f;">Fully Validated</div>
+    </div>
+
+    <div class="item-card">
+      <div class="item-name">Cytology Before Treatment</div>
+      <div class="item-detail">ACVD consensus: cutaneous cytology should be performed before initiating antifungal therapy. Trial therapy without cytological confirmation is of minimal benefit and creates diagnostic confusion.</div>
+      <div class="item-ref">References: [1][3][4] — ACVD Task Force consensus</div>
+      <div class="item-action" style="background:rgba(90,158,111,0.1); color:#5a9e6f;">Consensus Standard</div>
+    </div>
+  </div>
+
+  <!-- PLAUSIBLE -->
+  <div class="level-section" id="plausible" data-level="plausible">
+    <div class="level-header">
+      <div class="level-badge" style="background:rgba(184,160,64,0.15); color:#b8a040; border:1px solid rgba(184,160,64,0.3);">Plausible</div>
+      <span style="font-size:0.7rem; color:#b8a040; font-weight:500;">Publish with caveats</span>
+    </div>
+    <div class="level-desc">The mechanism is physiologically sound but direct clinical evidence specifically for canine Malassezia dermatitis is limited. Published with appropriate caveats about the evidence gap.</div>
+
+    <div class="item-card">
+      <div class="item-name">Epsom Salt (Magnesium Sulfate) Paw Soaks</div>
+      <div class="item-detail">Hypertonic solution that draws fluid from swollen tissue (osmotic effect), providing astringent/drying action. Drying effect is relevant because moisture is the primary modifiable factor in interdigital yeast overgrowth. Not specifically studied for Malassezia in dogs.</div>
+      <div class="item-ref">Mechanism sound — community-sourced, limited direct evidence</div>
+      <div class="item-action" style="background:rgba(184,160,64,0.1); color:#b8a040;">Plausible — Limited Evidence</div>
+    </div>
+
+    <div class="item-card">
+      <div class="item-name">Coconut Oil (Non-Fold Areas Only)</div>
+      <div class="item-detail">Contains lauric acid and capric acid with demonstrated in vitro antifungal activity against Candida species. No published clinical trial demonstrates standalone efficacy against M. pachydermatis. Barrier/emollient, not primary antifungal. Caution: may worsen moisture in fold areas.</div>
+      <div class="item-ref">References: [13] — In vitro data only, no clinical trials for M. pachydermatis</div>
+      <div class="item-action" style="background:rgba(184,160,64,0.1); color:#b8a040;">Partially Sound</div>
+    </div>
+  </div>
+
+  <!-- UNSUBSTANTIATED -->
+  <div class="level-section" id="unsubstantiated" data-level="unsubstantiated">
+    <div class="level-header">
+      <div class="level-badge" style="background:rgba(204,136,68,0.15); color:#cc8844; border:1px solid rgba(204,136,68,0.3);">Unsubstantiated</div>
+      <span style="font-size:0.7rem; color:#cc8844; font-weight:500;">Hold — explain why evidence is lacking</span>
+    </div>
+    <div class="level-desc">No evidence basis found. The claim is not necessarily wrong, but it cannot be confirmed against published veterinary literature. Held from publication with an explanation of what evidence would be needed.</div>
+
+    <div class="item-card">
+      <div class="item-name">"Yeast-Free" Diets Treat Skin Yeast</div>
+      <div class="item-detail">The Malassezia on the dog's skin is M. pachydermatis, which is not related to dietary yeast (Saccharomyces cerevisiae). Eliminating brewer's yeast from the diet does not treat Malassezia dermatitis. This is a persistent myth with no evidence basis.</div>
+      <div class="item-ref">No evidence — different organisms entirely</div>
+      <div class="item-action" style="background:rgba(204,136,68,0.1); color:#cc8844;">Myth — No Basis</div>
+    </div>
+
+    <div class="item-card">
+      <div class="item-name">Commercial Food Allergy Blood/Saliva Tests</div>
+      <div class="item-detail">Commercial food allergy blood and saliva tests are unreliable for diagnosing food adverse reactions in dogs. The elimination diet trial remains the gold standard. Multiple studies demonstrate poor sensitivity and specificity of these tests.</div>
+      <div class="item-ref">References: [5] — Hensel et al. explicitly states unreliability</div>
+      <div class="item-action" style="background:rgba(204,136,68,0.1); color:#cc8844;">Unreliable — Use Elimination Diet</div>
+    </div>
+  </div>
+
+  <!-- HARMFUL -->
+  <div class="level-section" id="harmful" data-level="harmful">
+    <div class="level-header">
+      <div class="level-badge" style="background:rgba(192,64,64,0.15); color:#c04040; border:1px solid rgba(192,64,64,0.3);">Harmful</div>
+      <span style="font-size:0.7rem; color:#c04040; font-weight:500;">Reject immediately with safety explanation</span>
+    </div>
+    <div class="level-desc">Could cause direct harm to the animal — toxicity, dangerous drug interactions, or advice that delays necessary veterinary care. Rejected immediately with a clear explanation of the danger mechanism.</div>
+
+    <div class="item-card" style="border-color: rgba(192,64,64,0.2);">
+      <div class="item-name">Raw Garlic as "Antifungal"</div>
+      <div class="item-detail">Allium species (garlic, onions) are toxic to dogs. They cause oxidative damage to red blood cells leading to Heinz body anemia. Do not administer garlic to dogs in any form regardless of claimed antifungal properties.</div>
+      <div class="item-ref">Toxicity well-documented — ASPCA Poison Control</div>
+      <div class="item-action" style="background:rgba(192,64,64,0.1); color:#c04040;">Toxic — Do Not Use</div>
+    </div>
+
+    <div class="item-card" style="border-color: rgba(192,64,64,0.2);">
+      <div class="item-name">Long-Term Prednisone for Itch</div>
+      <div class="item-detail">Chronic corticosteroid use worsens skin infections by suppressing immune function and causes iatrogenic Cushing's disease. Short-term tapering only. Use Cytopoint or Apoquel for ongoing itch management instead.</div>
+      <div class="item-ref">Well-established veterinary pharmacology</div>
+      <div class="item-action" style="background:rgba(192,64,64,0.1); color:#c04040;">Harmful Long-Term</div>
+    </div>
+
+    <div class="item-card" style="border-color: rgba(192,64,64,0.2);">
+      <div class="item-name">Tea Tree Oil at High Concentrations</div>
+      <div class="item-detail">Concentrated tea tree oil (melaleuca) is toxic to dogs when applied topically at high concentrations or ingested. Can cause CNS depression, weakness, incoordination, and liver damage. Dilute formulations exist but safer alternatives are available.</div>
+      <div class="item-ref">ASPCA, veterinary toxicology literature</div>
+      <div class="item-action" style="background:rgba(192,64,64,0.1); color:#c04040;">Toxic at Concentration</div>
+    </div>
+  </div>
+
+  <!-- NEEDS CONTEXT -->
+  <div class="level-section" id="needs-context" data-level="needs-context">
+    <div class="level-header">
+      <div class="level-badge" style="background:rgba(91,155,213,0.15); color:#5b9bd5; border:1px solid rgba(91,155,213,0.3);">Needs Context</div>
+      <span style="font-size:0.7rem; color:#5b9bd5; font-weight:500;">Hold for editorial/veterinary review</span>
+    </div>
+    <div class="level-desc">The claim depends on specific clinical circumstances. May be valid for some patients but harmful or irrelevant for others. Held for veterinary review to add appropriate clinical context before publication.</div>
+
+    <div class="item-card">
+      <div class="item-name">Dietary Allergen Avoidance ("No Bread / No Grain")</div>
+      <div class="item-detail">Directionally correct but oversimplified. Dietary allergens are common triggers in bulldogs, but the correct approach is a structured elimination diet trial with a single novel protein, not empiric ingredient avoidance based on anecdote. Several "grain-free" diets still contain triggering proteins.</div>
+      <div class="item-ref">References: [5][6] — Correct direction, wrong method</div>
+      <div class="item-action" style="background:rgba(91,155,213,0.1); color:#5b9bd5;">Needs Clinical Guidance</div>
+    </div>
+
+    <div class="item-card">
+      <div class="item-name">Coconut Oil in Skin Folds</div>
+      <div class="item-detail">Coconut oil on exposed, non-fold skin is plausible as a barrier/emollient. But applying oil to skin folds may increase moisture retention in already occluded zones, potentially worsening the warm-moist microenvironment that drives yeast. Context-dependent: safe on exposed skin, potentially harmful in folds.</div>
+      <div class="item-ref">Mechanism-based concern — no clinical data either way</div>
+      <div class="item-action" style="background:rgba(91,155,213,0.1); color:#5b9bd5;">Location-Dependent</div>
+    </div>
+  </div>
+
+  <div class="disclaimer">
+    Evidence classifications are based on the veterinary dermatology literature available at time of evaluation. Classifications may change as new research is published. All treatment decisions should be made with a licensed veterinarian.
+  </div>
+</div>
+
+<script>
+// Filter by level
+function filter(level) {
+  document.querySelectorAll('.level-section').forEach(s => {
+    s.style.display = s.dataset.level === level ? 'block' : 'none';
+  });
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  // Scroll to section
+  const el = document.getElementById(level);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function showAll() {
+  document.querySelectorAll('.level-section').forEach(s => s.style.display = 'block');
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+// Handle hash on load
+window.addEventListener('DOMContentLoaded', () => {
+  const hash = window.location.hash.replace('#', '');
+  if (hash && document.getElementById(hash)) {
+    filter(hash);
+    // Also activate the right button
+    document.querySelectorAll('.filter-btn').forEach(b => {
+      b.classList.remove('active');
+      if (b.textContent.trim().toLowerCase().replace(/\s+/g, '-') === hash) b.classList.add('active');
+    });
+  }
+});
+</script>
+</body>
+</html>
