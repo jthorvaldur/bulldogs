@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cytopoint Efficacy Data — BulldogDerm</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #0a0a0a;
+      color: #d0d0d0;
+      font-family: 'JetBrains Mono', monospace;
+      min-height: 100vh;
+    }
+    .header {
+      position: sticky; top: 0; z-index: 10;
+      padding: 16px 24px;
+      background: rgba(10,10,10,0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid #1e1e1e;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .header-left { display: flex; align-items: center; gap: 16px; }
+    .back {
+      font-size: 0.65rem; color: #777; text-decoration: none;
+      letter-spacing: 2px; text-transform: uppercase;
+    }
+    .back:hover { color: #d4a060; }
+    .title {
+      font-size: 0.75rem; font-weight: 600; color: #d4a060;
+      letter-spacing: 3px; text-transform: uppercase;
+    }
+
+    .container {
+      max-width: 900px; margin: 0 auto; padding: 40px 24px 80px;
+    }
+
+    .study-info {
+      background: #111; border: 1px solid #1e1e1e; border-radius: 6px;
+      padding: 24px; margin-bottom: 40px;
+    }
+    .study-title {
+      font-size: 0.85rem; font-weight: 600; color: #e8e8e8;
+      margin-bottom: 8px;
+    }
+    .study-meta {
+      font-size: 0.65rem; color: #777; line-height: 1.7;
+    }
+    .study-meta a { color: #d4a060; }
+
+    /* Charts */
+    .chart-section {
+      margin-bottom: 48px;
+    }
+    .chart-title {
+      font-size: 0.55rem; font-weight: 600; letter-spacing: 3px;
+      text-transform: uppercase; color: #888; margin-bottom: 16px;
+    }
+    canvas {
+      width: 100%; border-radius: 6px;
+      background: #0d0d0d; border: 1px solid #1a1a1a;
+    }
+
+    /* Key stats */
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1px; background: #1e1e1e; border: 1px solid #1e1e1e;
+      border-radius: 6px; overflow: hidden; margin-bottom: 40px;
+    }
+    .stat {
+      background: #111; padding: 20px; text-align: center;
+    }
+    .stat-val {
+      font-size: 1.4rem; font-weight: 700; color: #d4a060;
+    }
+    .stat-lbl {
+      font-size: 0.5rem; font-weight: 600; letter-spacing: 2px;
+      text-transform: uppercase; color: #666; margin-top: 4px;
+    }
+
+    /* Callout */
+    .callout {
+      border-left: 3px solid #5a9e6f; padding: 16px 20px;
+      background: rgba(90,158,111,0.06); border-radius: 0 6px 6px 0;
+      font-size: 0.7rem; color: #999; line-height: 1.8; margin-bottom: 32px;
+    }
+    .callout strong { color: #5a9e6f; }
+
+    .disclaimer {
+      font-size: 0.5rem; color: #444; line-height: 1.8; margin-top: 40px;
+      border-top: 1px solid #1e1e1e; padding-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <a href="../index.html" class="back">Home</a>
+    <div class="title">Cytopoint Efficacy</div>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="study-info">
+    <div class="study-title">Use of Cytopoint in the Allergic Dog</div>
+    <div class="study-meta">
+      Gober M, Hillier A, Vasquez-Hidalgo MA, Amodie D, Mellencamp MA<br>
+      <em>Frontiers in Veterinary Science</em>, 2022;9:909776<br>
+      <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9343842/" target="_blank">PMC9343842</a> &middot; DOI: 10.3389/fvets.2022.909776<br><br>
+      Prospective study &middot; n=62 dogs &middot; 26 breeds &middot; Age range 6 months-12 years (mean 5.77 yrs)<br>
+      60% seasonal allergies &middot; 30% non-seasonal &middot; Malassezia resolved prior to entry
+    </div>
+  </div>
+
+  <!-- Key stats -->
+  <div class="stats-grid">
+    <div class="stat">
+      <div class="stat-val">47%</div>
+      <div class="stat-lbl">Success in 24hrs</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val">94%</div>
+      <div class="stat-lbl">Success Day 7</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val">98%</div>
+      <div class="stat-lbl">Success Day 28</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val">100%</div>
+      <div class="stat-lbl">Success Day 56</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val">92%</div>
+      <div class="stat-lbl">50% Lesion Reduction</div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>Why this matters for bulldog owners:</strong> Cytopoint breaks the scratch-infection cycle by targeting IL-31, the primary itch cytokine. The study required Malassezia to be cleared before entry, confirming that pruritus management is a separate therapeutic goal from infection treatment. For bulldogs with atopic dermatitis driving recurrent yeast, Cytopoint addresses the upstream cause of barrier disruption.
+  </div>
+
+  <!-- Chart 1: Treatment Success Rate -->
+  <div class="chart-section">
+    <div class="chart-title">Treatment Success Rate Over Time</div>
+    <canvas id="successChart" height="300"></canvas>
+  </div>
+
+  <!-- Chart 2: Pruritus Score (PVAS) -->
+  <div class="chart-section">
+    <div class="chart-title">Owner-Assessed Pruritus Score (PVAS) Over Time</div>
+    <canvas id="pvasChart" height="300"></canvas>
+  </div>
+
+  <!-- Chart 3: Comparison bar chart -->
+  <div class="chart-section">
+    <div class="chart-title">Pruritus Management Approaches Compared</div>
+    <canvas id="compChart" height="280"></canvas>
+  </div>
+
+  <div class="disclaimer">
+    Data sourced from Gober et al. 2022 (PMC9343842). This visualization is for educational purposes only. Treatment success defined as owner-reported PVAS improvement meeting predefined threshold. Individual results may vary. All treatment decisions should be made with a licensed veterinarian.
+  </div>
+
+</div>
+
+<script>
+// Utility
+function setupCanvas(id) {
+  const c = document.getElementById(id);
+  const dpr = window.devicePixelRatio || 1;
+  const rect = c.getBoundingClientRect();
+  c.width = rect.width * dpr;
+  c.height = rect.height * dpr;
+  const ctx = c.getContext('2d');
+  ctx.scale(dpr, dpr);
+  return { ctx, W: rect.width, H: rect.height };
+}
+
+// Colors
+const GOLD = '#d4a060';
+const GREEN = '#5a9e6f';
+const BLUE = '#5b9bd5';
+const DIM = '#444';
+const GRID = '#1a1a1a';
+
+// ========================================
+// Chart 1: Treatment Success Rate (area + line)
+// ========================================
+(function() {
+  const { ctx, W, H } = setupCanvas('successChart');
+  const pad = { top: 30, right: 40, bottom: 50, left: 60 };
+  const cW = W - pad.left - pad.right;
+  const cH = H - pad.top - pad.bottom;
+
+  const data = [
+    { day: 0, val: 0, label: 'Day 0' },
+    { day: 1, val: 47, label: '24h' },
+    { day: 7, val: 94, label: 'Day 7' },
+    { day: 28, val: 98, label: 'Day 28' },
+    { day: 56, val: 100, label: 'Day 56' }
+  ];
+  const maxDay = 56;
+
+  function x(day) { return pad.left + (day / maxDay) * cW; }
+  function y(val) { return pad.top + (1 - val / 100) * cH; }
+
+  // Grid lines
+  ctx.strokeStyle = GRID;
+  ctx.lineWidth = 0.5;
+  for (let v = 0; v <= 100; v += 25) {
+    ctx.beginPath();
+    ctx.moveTo(pad.left, y(v));
+    ctx.lineTo(W - pad.right, y(v));
+    ctx.stroke();
+    ctx.font = '9px JetBrains Mono';
+    ctx.fillStyle = DIM;
+    ctx.textAlign = 'right';
+    ctx.fillText(v + '%', pad.left - 8, y(v) + 3);
+  }
+
+  // X axis labels
+  ctx.textAlign = 'center';
+  data.forEach(d => {
+    ctx.fillStyle = DIM;
+    ctx.font = '9px JetBrains Mono';
+    ctx.fillText(d.label, x(d.day), H - pad.bottom + 20);
+  });
+
+  // Area fill
+  ctx.beginPath();
+  ctx.moveTo(x(data[0].day), y(0));
+  data.forEach(d => ctx.lineTo(x(d.day), y(d.val)));
+  ctx.lineTo(x(data[data.length - 1].day), y(0));
+  ctx.closePath();
+  const grad = ctx.createLinearGradient(0, pad.top, 0, H - pad.bottom);
+  grad.addColorStop(0, 'rgba(212,160,96,0.15)');
+  grad.addColorStop(1, 'rgba(212,160,96,0.02)');
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  // Line
+  ctx.beginPath();
+  data.forEach((d, i) => {
+    if (i === 0) ctx.moveTo(x(d.day), y(d.val));
+    else ctx.lineTo(x(d.day), y(d.val));
+  });
+  ctx.strokeStyle = GOLD;
+  ctx.lineWidth = 2;
+  ctx.lineJoin = 'round';
+  ctx.stroke();
+
+  // Data points
+  data.forEach(d => {
+    ctx.beginPath();
+    ctx.arc(x(d.day), y(d.val), 5, 0, Math.PI * 2);
+    ctx.fillStyle = '#0d0d0d';
+    ctx.fill();
+    ctx.strokeStyle = GOLD;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Value label
+    ctx.font = '600 10px JetBrains Mono';
+    ctx.fillStyle = GOLD;
+    ctx.textAlign = 'center';
+    ctx.fillText(d.val + '%', x(d.day), y(d.val) - 12);
+  });
+
+  // Title
+  ctx.font = '500 9px JetBrains Mono';
+  ctx.fillStyle = '#666';
+  ctx.textAlign = 'left';
+  ctx.fillText('% of dogs achieving treatment success (owner-assessed)', pad.left, 18);
+})();
+
+// ========================================
+// Chart 2: PVAS Score Over Time (declining = better)
+// ========================================
+(function() {
+  const { ctx, W, H } = setupCanvas('pvasChart');
+  const pad = { top: 30, right: 40, bottom: 50, left: 60 };
+  const cW = W - pad.left - pad.right;
+  const cH = H - pad.top - pad.bottom;
+
+  // PVAS is a visual analog scale 0-100mm. Normal threshold is <20mm.
+  const data = [
+    { day: 0, val: 62, label: 'Baseline' },
+    { day: 7, val: 25.2, label: 'Day 7' },
+    { day: 28, val: 20.6, label: 'Day 28' },
+    { day: 56, val: 20.2, label: 'Day 56' }
+  ];
+  const maxDay = 56;
+  const maxVal = 80;
+
+  function x(day) { return pad.left + (day / maxDay) * cW; }
+  function y(val) { return pad.top + (val / maxVal) * cH; }
+
+  // Grid
+  ctx.strokeStyle = GRID;
+  ctx.lineWidth = 0.5;
+  for (let v = 0; v <= maxVal; v += 20) {
+    ctx.beginPath();
+    ctx.moveTo(pad.left, y(v));
+    ctx.lineTo(W - pad.right, y(v));
+    ctx.stroke();
+    ctx.font = '9px JetBrains Mono';
+    ctx.fillStyle = DIM;
+    ctx.textAlign = 'right';
+    ctx.fillText(v + 'mm', pad.left - 8, y(v) + 3);
+  }
+
+  // Normal threshold line at 20mm
+  ctx.strokeStyle = GREEN + '60';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([4, 4]);
+  ctx.beginPath();
+  ctx.moveTo(pad.left, y(20));
+  ctx.lineTo(W - pad.right, y(20));
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.font = '500 8px JetBrains Mono';
+  ctx.fillStyle = GREEN;
+  ctx.textAlign = 'right';
+  ctx.fillText('Normal threshold (<20mm)', W - pad.right, y(20) - 6);
+
+  // X axis
+  ctx.textAlign = 'center';
+  data.forEach(d => {
+    ctx.fillStyle = DIM;
+    ctx.font = '9px JetBrains Mono';
+    ctx.fillText(d.label, x(d.day), H - pad.bottom + 20);
+  });
+
+  // Area fill (inverted - higher is worse)
+  ctx.beginPath();
+  ctx.moveTo(x(data[0].day), y(0));
+  data.forEach(d => ctx.lineTo(x(d.day), y(d.val)));
+  ctx.lineTo(x(data[data.length - 1].day), y(0));
+  ctx.closePath();
+  const grad = ctx.createLinearGradient(0, H - pad.bottom, 0, pad.top);
+  grad.addColorStop(0, 'rgba(91,155,213,0.02)');
+  grad.addColorStop(1, 'rgba(91,155,213,0.12)');
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  // Line
+  ctx.beginPath();
+  data.forEach((d, i) => {
+    if (i === 0) ctx.moveTo(x(d.day), y(d.val));
+    else ctx.lineTo(x(d.day), y(d.val));
+  });
+  ctx.strokeStyle = BLUE;
+  ctx.lineWidth = 2;
+  ctx.lineJoin = 'round';
+  ctx.stroke();
+
+  // Points
+  data.forEach(d => {
+    ctx.beginPath();
+    ctx.arc(x(d.day), y(d.val), 5, 0, Math.PI * 2);
+    ctx.fillStyle = '#0d0d0d';
+    ctx.fill();
+    ctx.strokeStyle = BLUE;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    ctx.font = '600 10px JetBrains Mono';
+    ctx.fillStyle = BLUE;
+    ctx.textAlign = 'center';
+    ctx.fillText(d.val + 'mm', x(d.day), y(d.val) - 12);
+  });
+
+  // Title
+  ctx.font = '500 9px JetBrains Mono';
+  ctx.fillStyle = '#666';
+  ctx.textAlign = 'left';
+  ctx.fillText('Pruritus Visual Analog Scale (PVAS) — lower is better', pad.left, 18);
+})();
+
+// ========================================
+// Chart 3: Comparison bar chart
+// ========================================
+(function() {
+  const { ctx, W, H } = setupCanvas('compChart');
+  const pad = { top: 30, right: 30, bottom: 60, left: 30 };
+  const cW = W - pad.left - pad.right;
+  const cH = H - pad.top - pad.bottom;
+
+  const approaches = [
+    { name: 'Cytopoint', onset: 'Hours', efficacy: 100, color: GOLD, note: '100% by Day 56' },
+    { name: 'Apoquel', onset: 'Hours', efficacy: 85, color: '#cc8844', note: 'Short-term flare use' },
+    { name: 'Immunotherapy', onset: '4-6 months', efficacy: 75, color: GREEN, note: '60-80% success' },
+    { name: 'Prednisone', onset: 'Hours', efficacy: 90, color: '#c04040', note: 'Long-term risks' },
+    { name: 'Environmental', onset: 'Weeks', efficacy: 40, color: '#7ab5cc', note: 'Adjunctive only' }
+  ];
+
+  const barW = cW / approaches.length * 0.6;
+  const gap = cW / approaches.length;
+
+  // Grid
+  ctx.strokeStyle = GRID;
+  ctx.lineWidth = 0.5;
+  for (let v = 0; v <= 100; v += 25) {
+    const bY = pad.top + (1 - v / 100) * cH;
+    ctx.beginPath();
+    ctx.moveTo(pad.left, bY);
+    ctx.lineTo(W - pad.right, bY);
+    ctx.stroke();
+    ctx.font = '8px JetBrains Mono';
+    ctx.fillStyle = DIM;
+    ctx.textAlign = 'right';
+    if (v > 0) ctx.fillText(v + '%', pad.left + gap * 0.15, bY + 3);
+  }
+
+  approaches.forEach((a, i) => {
+    const bx = pad.left + gap * i + gap * 0.5 - barW / 2;
+    const barH = (a.efficacy / 100) * cH;
+    const bY = pad.top + cH - barH;
+
+    // Bar
+    const grad = ctx.createLinearGradient(0, bY, 0, pad.top + cH);
+    grad.addColorStop(0, a.color + 'cc');
+    grad.addColorStop(1, a.color + '30');
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.roundRect(bx, bY, barW, barH, [4, 4, 0, 0]);
+    ctx.fill();
+
+    // Value
+    ctx.font = '600 11px JetBrains Mono';
+    ctx.fillStyle = a.color;
+    ctx.textAlign = 'center';
+    ctx.fillText(a.efficacy + '%', bx + barW / 2, bY - 8);
+
+    // Label
+    ctx.font = '500 8px JetBrains Mono';
+    ctx.fillStyle = '#ccc';
+    ctx.fillText(a.name, bx + barW / 2, pad.top + cH + 16);
+
+    // Onset
+    ctx.font = '400 7px JetBrains Mono';
+    ctx.fillStyle = '#666';
+    ctx.fillText(a.onset, bx + barW / 2, pad.top + cH + 30);
+
+    // Note
+    ctx.font = '300 6px JetBrains Mono';
+    ctx.fillStyle = '#555';
+    ctx.fillText(a.note, bx + barW / 2, pad.top + cH + 42);
+  });
+
+  // Title
+  ctx.font = '500 9px JetBrains Mono';
+  ctx.fillStyle = '#666';
+  ctx.textAlign = 'left';
+  ctx.fillText('Estimated efficacy comparison (indicative, not head-to-head trial data)', pad.left, 18);
+})();
+</script>
+</body>
+</html>

@@ -297,7 +297,7 @@
         <div class="stat-label">Step Protocol</div>
       </div>
       <div class="stat-item">
-        <div class="stat-value">17+</div>
+        <div class="stat-value">18+</div>
         <div class="stat-label">References</div>
       </div>
       <div class="stat-item">
@@ -340,6 +340,13 @@
         <div class="viz-card-body">
           <div class="viz-card-title">Diagnostic Flowchart</div>
           <div class="viz-card-desc">Step through the 7-step diagnostic sequence interactively</div>
+        </div>
+      </a>
+      <a href="viz/cytopoint_efficacy.html" class="card viz-card">
+        <canvas id="vizPreview5" width="400" height="160"></canvas>
+        <div class="viz-card-body">
+          <div class="viz-card-title">Cytopoint Efficacy Data</div>
+          <div class="viz-card-desc">Clinical trial data: 94% success by Day 7, 100% by Day 56 (PMC9343842)</div>
         </div>
       </a>
     </div>
@@ -782,6 +789,34 @@ initPreview('vizPreview4', function(ctx, W, H, t) {
     drawBranch(ex, ey, len * 0.65, angle + 0.5 + sway, depth - 1);
   }
   drawBranch(W / 2, H - 10, 35, -Math.PI / 2, 5);
+});
+
+// Preview 5: Cytopoint Efficacy — animated bar chart
+initPreview('vizPreview5', function(ctx, W, H, t) {
+  const bars = [
+    { x: 0.15, val: 0.47, label: '24h' },
+    { x: 0.35, val: 0.94, label: 'D7' },
+    { x: 0.55, val: 0.98, label: 'D28' },
+    { x: 0.75, val: 1.00, label: 'D56' }
+  ];
+  const animProgress = Math.min(t / 60, 1);
+  const barW = W * 0.12;
+  bars.forEach(b => {
+    const bx = b.x * W - barW / 2;
+    const barH = b.val * (H - 40) * animProgress;
+    const by = H - 10 - barH;
+    ctx.fillStyle = 'rgba(212,160,96,0.3)';
+    ctx.beginPath();
+    ctx.roundRect(bx, by, barW, barH, [3, 3, 0, 0]);
+    ctx.fill();
+    ctx.font = '600 8px JetBrains Mono';
+    ctx.fillStyle = '#d4a060';
+    ctx.textAlign = 'center';
+    if (animProgress > 0.5) ctx.fillText(Math.round(b.val * 100) + '%', b.x * W, by - 5);
+    ctx.font = '400 7px JetBrains Mono';
+    ctx.fillStyle = '#555';
+    ctx.fillText(b.label, b.x * W, H - 2);
+  });
 });
 </script>
 

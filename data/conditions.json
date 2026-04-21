@@ -141,7 +141,19 @@
     ],
     "itch_management": [
       { "name": "Oclacitinib (Apoquel)", "evidence": "STRONG", "type": "JAK inhibitor" },
-      { "name": "Lokivetmab (Cytopoint)", "evidence": "STRONG", "type": "monoclonal antibody" }
+      { "name": "Lokivetmab (Cytopoint)", "evidence": "STRONG", "type": "monoclonal antibody",
+        "clinical_data": {
+          "source": "Gober et al. 2022, PMC9343842, n=62",
+          "success_24h": 0.47,
+          "success_day7": 0.94,
+          "success_day28": 0.98,
+          "success_day56": 1.00,
+          "pvas_day7": 25.2,
+          "pvas_day28": 20.58,
+          "pvas_day56": 20.2,
+          "vet_50pct_reduction_day28": 0.92
+        }
+      }
     ]
   },
   "diagnostic_steps": [
