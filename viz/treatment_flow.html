@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Treatment Protocol Flow — BulldogDerm</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #0a0a0a;
+      color: #d0d0d0;
+      font-family: 'JetBrains Mono', monospace;
+      overflow: hidden;
+      height: 100vh;
+    }
+    canvas { display: block; }
+
+    .header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 10;
+      padding: 16px 24px;
+      background: linear-gradient(to bottom, rgba(10,10,10,0.95), transparent);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .header-left { display: flex; align-items: center; gap: 16px; }
+    .back {
+      font-size: 0.65rem; color: #777; text-decoration: none;
+      letter-spacing: 2px; text-transform: uppercase;
+    }
+    .back:hover { color: #d4a060; }
+    .title {
+      font-size: 0.75rem; font-weight: 600; color: #d4a060;
+      letter-spacing: 3px; text-transform: uppercase;
+    }
+
+    .legend {
+      position: fixed; top: 80px; right: 20px; z-index: 10;
+      background: rgba(17,17,17,0.9); border: 1px solid #1e1e1e;
+      border-radius: 6px; padding: 16px 20px;
+      backdrop-filter: blur(8px);
+    }
+    .legend-title {
+      font-size: 0.55rem; font-weight: 600; letter-spacing: 2px;
+      text-transform: uppercase; color: #777; margin-bottom: 10px;
+    }
+    .legend-item {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 0.6rem; color: #999; margin-bottom: 6px;
+    }
+    .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+    /* Tooltip */
+    .tooltip {
+      position: fixed; z-index: 30;
+      background: rgba(17,17,17,0.95); border: 1px solid #2a2a2a;
+      border-radius: 6px; padding: 14px 18px;
+      max-width: 320px; pointer-events: none;
+      opacity: 0; transition: opacity 0.2s;
+      backdrop-filter: blur(8px);
+    }
+    .tooltip.visible { opacity: 1; }
+    .tooltip-title {
+      font-size: 0.75rem; font-weight: 600; color: #e8e8e8; margin-bottom: 6px;
+    }
+    .tooltip-desc {
+      font-size: 0.65rem; color: #999; line-height: 1.6;
+    }
+    .tooltip-evidence {
+      margin-top: 8px; font-size: 0.55rem; font-weight: 600;
+      letter-spacing: 1px; text-transform: uppercase;
+    }
+
+    .instructions {
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+      font-size: 0.55rem; color: #444; letter-spacing: 1px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <a href="../index.html" class="back">Home</a>
+    <div class="title">Treatment Protocol Flow</div>
+  </div>
+</div>
+
+<div class="legend">
+  <div class="legend-title">Treatment Phases</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#5b9bd5"></div> Diagnosis</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#d4a060"></div> Topical Treatment</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#cc8844"></div> Systemic / Adjunct</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#5a9e6f"></div> Maintenance</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#c04040"></div> Escalation</div>
+</div>
+
+<canvas id="canvas"></canvas>
+<div class="tooltip" id="tooltip">
+  <div class="tooltip-title" id="ttTitle"></div>
+  <div class="tooltip-desc" id="ttDesc"></div>
+  <div class="tooltip-evidence" id="ttEvidence"></div>
+</div>
+
+<div class="instructions">Hover over nodes to see treatment details &middot; Watch particles flow through the protocol</div>
+
+<script>
+// Treatment flow nodes
+const NODES = [
+  // Row 1: Diagnosis
+  { id: 'cytology', x: 0.5, y: 0.10, label: 'Cytology', phase: 'diagnosis',
+    title: 'Cutaneous Cytology', desc: 'Perform cytology at all affected sites. Confirm Malassezia and/or bacteria. Do not treat blind.', evidence: 'ACVD Consensus: Required' },
+
+  // Row 2: Initial treatment splits
+  { id: 'topical', x: 0.30, y: 0.24, label: 'Topical\nTherapy', phase: 'topical',
+    title: 'First-Line Topical Therapy', desc: '2% miconazole + 2% chlorhexidine shampoo, twice weekly, 10-minute contact time. This is the gold standard.', evidence: 'STRONG — ACVD Consensus' },
+  { id: 'adjuncts', x: 0.70, y: 0.24, label: 'Adjuncts', phase: 'topical',
+    title: 'Community-Validated Adjuncts', desc: 'Povidone-iodine paw soaks, chlorhexidine spray, Epsom salt soaks, clotrimazole spot treatment.', evidence: 'SOUND to PLAUSIBLE' },
+
+  // Row 3: Concurrent workup
+  { id: 'scraping', x: 0.20, y: 0.38, label: 'Skin\nScraping', phase: 'diagnosis',
+    title: 'Deep Skin Scraping', desc: 'Rule out Demodex. Demodicosis can mimic or coexist with Malassezia dermatitis.', evidence: 'Required — Step 3' },
+  { id: 'bloodwork', x: 0.50, y: 0.38, label: 'Baseline\nBloodwork', phase: 'diagnosis',
+    title: 'CBC, Chemistry, Urinalysis', desc: 'Screen for metabolic and endocrine disease. Elevated ALP and dilute urine suggest Cushing\'s. Hypercholesterolemia suggests hypothyroidism.', evidence: 'Required — Step 4' },
+  { id: 'foldcare', x: 0.80, y: 0.38, label: 'Daily Fold\nCare', phase: 'maintenance',
+    title: 'Skin Fold Hygiene', desc: 'Daily cleaning of all skin folds with chlorhexidine or miconazole wipes. Pat completely dry. Non-negotiable in bulldogs.', evidence: 'STRONG — Breed Essential' },
+
+  // Row 4: Re-evaluation
+  { id: 'reeval', x: 0.50, y: 0.52, label: 'Re-Evaluate\n3-4 Weeks', phase: 'diagnosis',
+    title: 'Clinical Re-Assessment', desc: 'Repeat cytology. Assess clinical response. This determines the next steps based on what resolved and what persists.', evidence: 'Required — Step 5' },
+
+  // Row 5: Branch outcomes
+  { id: 'cleared', x: 0.20, y: 0.66, label: 'Infection\nCleared', phase: 'maintenance',
+    title: 'Infection Resolved', desc: 'If infection clears but pruritus persists → allergy workup. If infection clears but alopecia persists → endocrine workup.', evidence: 'Decision Point' },
+  { id: 'persists', x: 0.50, y: 0.66, label: 'Infection\nPersists', phase: 'systemic',
+    title: 'Infection Not Resolving', desc: 'Culture and sensitivity testing. Consider systemic antifungals: itraconazole 5 mg/kg daily for 21-30 days or ketoconazole 5-10 mg/kg daily.', evidence: 'Escalation Required' },
+  { id: 'allergy', x: 0.80, y: 0.66, label: 'Allergy\nWorkup', phase: 'diagnosis',
+    title: 'Allergy Investigation', desc: 'Elimination diet trial (8-12 weeks) for food allergy. IDT or serum IgE for environmental allergy. Referral to DACVD for immunotherapy planning.', evidence: 'Step 6 — Underlying Cause' },
+
+  // Row 6: Long-term
+  { id: 'maintenance', x: 0.30, y: 0.80, label: 'Maintenance\nProtocol', phase: 'maintenance',
+    title: 'Long-Term Maintenance', desc: 'Weekly-biweekly antimicrobial baths. Daily fold care. Paw cleaning. Environmental optimization. Quarterly vet follow-up with cytology.', evidence: 'Step 7 — Ongoing' },
+  { id: 'immunotherapy', x: 0.70, y: 0.80, label: 'Immuno-\ntherapy', phase: 'escalation',
+    title: 'Allergen-Specific Immunotherapy', desc: 'ASIT addresses the underlying immune dysfunction. 4-6 month escalation phase, then monthly maintenance. 60-80% success rate. The closest thing to a cure.', evidence: 'STRONG — DACVD Managed' },
+  { id: 'itchcontrol', x: 0.50, y: 0.80, label: 'Itch\nControl', phase: 'systemic',
+    title: 'Pruritus Management', desc: 'Oclacitinib (Apoquel) for acute flares. Lokivetmab (Cytopoint) every 4-8 weeks for ongoing control. Breaking the scratch-infection cycle is therapeutic, not cosmetic.', evidence: 'STRONG — Community Game-Changer' }
+];
+
+// Edges (flow connections)
+const EDGES = [
+  { from: 'cytology', to: 'topical' },
+  { from: 'cytology', to: 'adjuncts' },
+  { from: 'topical', to: 'scraping' },
+  { from: 'topical', to: 'bloodwork' },
+  { from: 'adjuncts', to: 'foldcare' },
+  { from: 'adjuncts', to: 'bloodwork' },
+  { from: 'scraping', to: 'reeval' },
+  { from: 'bloodwork', to: 'reeval' },
+  { from: 'foldcare', to: 'reeval' },
+  { from: 'reeval', to: 'cleared' },
+  { from: 'reeval', to: 'persists' },
+  { from: 'reeval', to: 'allergy' },
+  { from: 'cleared', to: 'maintenance' },
+  { from: 'persists', to: 'itchcontrol' },
+  { from: 'allergy', to: 'immunotherapy' },
+  { from: 'allergy', to: 'itchcontrol' },
+  { from: 'persists', to: 'maintenance' },
+];
+
+const PHASE_COLORS = {
+  diagnosis: '#5b9bd5',
+  topical: '#d4a060',
+  systemic: '#cc8844',
+  maintenance: '#5a9e6f',
+  escalation: '#c04040'
+};
+
+const canvas = document.getElementById('canvas');
+const ctx2 = canvas.getContext('2d');
+const dpr = window.devicePixelRatio || 1;
+let W, H;
+let hoveredNode = null;
+let time = 0;
+
+// Particles on edges
+const edgeParticles = EDGES.map(() => []);
+
+function resize() {
+  W = window.innerWidth;
+  H = window.innerHeight;
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  canvas.style.width = W + 'px';
+  canvas.style.height = H + 'px';
+  ctx2.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+resize();
+window.addEventListener('resize', resize);
+
+function nodePos(node) {
+  return { x: node.x * W, y: node.y * H };
+}
+
+// Mouse interaction
+canvas.addEventListener('mousemove', e => {
+  const mx = e.clientX;
+  const my = e.clientY;
+  hoveredNode = null;
+  for (const n of NODES) {
+    const p = nodePos(n);
+    const dx = mx - p.x;
+    const dy = my - p.y;
+    if (Math.sqrt(dx * dx + dy * dy) < 36) {
+      hoveredNode = n;
+      break;
+    }
+  }
+  canvas.style.cursor = hoveredNode ? 'pointer' : 'default';
+
+  // Tooltip
+  const tooltip = document.getElementById('tooltip');
+  if (hoveredNode) {
+    document.getElementById('ttTitle').textContent = hoveredNode.title;
+    document.getElementById('ttDesc').textContent = hoveredNode.desc;
+    const evEl = document.getElementById('ttEvidence');
+    evEl.textContent = hoveredNode.evidence;
+    evEl.style.color = PHASE_COLORS[hoveredNode.phase];
+    tooltip.style.left = Math.min(mx + 16, W - 340) + 'px';
+    tooltip.style.top = Math.min(my + 16, H - 150) + 'px';
+    tooltip.classList.add('visible');
+  } else {
+    tooltip.classList.remove('visible');
+  }
+});
+
+function draw() {
+  ctx2.clearRect(0, 0, W, H);
+
+  // Background glow
+  const grad = ctx2.createRadialGradient(W * 0.5, H * 0.1, 0, W * 0.5, H * 0.1, H * 0.5);
+  grad.addColorStop(0, 'rgba(91,155,213,0.02)');
+  grad.addColorStop(1, 'transparent');
+  ctx2.fillStyle = grad;
+  ctx2.fillRect(0, 0, W, H);
+
+  // Draw edges
+  EDGES.forEach((e, ei) => {
+    const fromNode = NODES.find(n => n.id === e.from);
+    const toNode = NODES.find(n => n.id === e.to);
+    if (!fromNode || !toNode) return;
+    const fp = nodePos(fromNode);
+    const tp = nodePos(toNode);
+
+    const isHighlighted = hoveredNode &&
+      (hoveredNode.id === e.from || hoveredNode.id === e.to);
+
+    // Curved connection
+    const mx = (fp.x + tp.x) / 2;
+    const my = (fp.y + tp.y) / 2;
+    const alpha = isHighlighted ? 0.3 : 0.08;
+
+    ctx2.strokeStyle = `rgba(212,160,96,${alpha})`;
+    ctx2.lineWidth = isHighlighted ? 1.5 : 0.8;
+    ctx2.beginPath();
+    ctx2.moveTo(fp.x, fp.y);
+    ctx2.lineTo(tp.x, tp.y);
+    ctx2.stroke();
+
+    // Arrow at midpoint
+    const angle = Math.atan2(tp.y - fp.y, tp.x - fp.x);
+    const arrowX = mx;
+    const arrowY = my;
+    ctx2.save();
+    ctx2.translate(arrowX, arrowY);
+    ctx2.rotate(angle);
+    ctx2.beginPath();
+    ctx2.moveTo(5, 0);
+    ctx2.lineTo(-3, -3);
+    ctx2.lineTo(-3, 3);
+    ctx2.closePath();
+    ctx2.fillStyle = `rgba(212,160,96,${alpha * 1.5})`;
+    ctx2.fill();
+    ctx2.restore();
+
+    // Spawn particles
+    if (Math.random() < 0.03) {
+      edgeParticles[ei].push({ t: 0, speed: 0.005 + Math.random() * 0.008 });
+    }
+
+    // Draw particles
+    edgeParticles[ei] = edgeParticles[ei].filter(p => {
+      p.t += p.speed;
+      if (p.t > 1) return false;
+      const px = fp.x + (tp.x - fp.x) * p.t;
+      const py = fp.y + (tp.y - fp.y) * p.t;
+      const pa = Math.sin(p.t * Math.PI) * 0.7;
+      ctx2.beginPath();
+      ctx2.arc(px, py, 2, 0, Math.PI * 2);
+      ctx2.fillStyle = `rgba(212,160,96,${pa})`;
+      ctx2.shadowBlur = 6;
+      ctx2.shadowColor = '#d4a060';
+      ctx2.fill();
+      ctx2.shadowBlur = 0;
+      return true;
+    });
+  });
+
+  // Draw nodes
+  NODES.forEach(n => {
+    const p = nodePos(n);
+    const isHovered = n === hoveredNode;
+    const color = PHASE_COLORS[n.phase];
+    const r = isHovered ? 32 : 28;
+    const pulse = 1 + Math.sin(time * 0.02 + NODES.indexOf(n) * 0.8) * 0.05;
+
+    // Glow
+    if (isHovered) {
+      const glow = ctx2.createRadialGradient(p.x, p.y, r, p.x, p.y, r * 2.5);
+      glow.addColorStop(0, color + '20');
+      glow.addColorStop(1, 'transparent');
+      ctx2.beginPath();
+      ctx2.arc(p.x, p.y, r * 2.5, 0, Math.PI * 2);
+      ctx2.fillStyle = glow;
+      ctx2.fill();
+    }
+
+    // Node circle
+    ctx2.beginPath();
+    ctx2.arc(p.x, p.y, r * pulse, 0, Math.PI * 2);
+    ctx2.fillStyle = '#0e0e0e';
+    ctx2.fill();
+    ctx2.strokeStyle = isHovered ? color : color + '80';
+    ctx2.lineWidth = isHovered ? 2 : 1;
+    ctx2.stroke();
+
+    // Inner accent
+    ctx2.beginPath();
+    ctx2.arc(p.x, p.y, r * pulse * 0.3, 0, Math.PI * 2);
+    ctx2.fillStyle = color + '40';
+    ctx2.fill();
+
+    // Label
+    ctx2.font = `${isHovered ? '600' : '400'} 8px JetBrains Mono`;
+    ctx2.textAlign = 'center';
+    ctx2.fillStyle = isHovered ? '#e8e8e8' : '#aaa';
+
+    const lines = n.label.split('\n');
+    lines.forEach((line, i) => {
+      const ly = p.y + (i - (lines.length - 1) / 2) * 10;
+      ctx2.fillText(line, p.x, ly + 3);
+    });
+  });
+
+  time++;
+  requestAnimationFrame(draw);
+}
+
+draw();
+</script>
+</body>
+</html>

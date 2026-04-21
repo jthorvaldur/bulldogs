@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About — Bulldog Dermatitis Handbook</title>
+  <link rel="stylesheet" href="css/global.css">
+  <style>
+    .about-hero {
+      padding: 120px 0 60px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+    }
+    .about-content {
+      max-width: 740px;
+      margin: 0 auto;
+    }
+    .about-content h2 {
+      font-size: var(--size-lg);
+      color: var(--text-bright);
+      margin: 48px 0 16px;
+      letter-spacing: 1px;
+    }
+    .about-content p {
+      font-size: var(--size-base);
+      color: var(--text-dim);
+      line-height: 1.9;
+      margin-bottom: 16px;
+    }
+    .about-content strong { color: var(--text); }
+    .ref-list {
+      list-style: none;
+      font-size: var(--size-sm);
+      color: var(--text-dim);
+    }
+    .ref-list li {
+      padding: 6px 0;
+      border-bottom: 1px solid var(--border);
+      line-height: 1.6;
+    }
+    .ref-list li span { color: var(--accent); font-weight: 600; margin-right: 8px; }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">BulldogDerm</a>
+    <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">Menu</button>
+    <ul class="nav-links">
+      <li><a href="handbook.html">Handbook</a></li>
+      <li><a href="/">Explore</a></li>
+      <li><a href="about.html" class="active">About</a></li>
+    </ul>
+  </div>
+</nav>
+
+<section class="about-hero">
+  <div class="container">
+    <div class="section-label">About This Project</div>
+    <h1 class="section-title" style="font-size:var(--size-2xl);">Methodology & Mission</h1>
+    <p style="color:var(--text-dim); font-size:var(--size-base); max-width:600px; margin:0 auto;">
+      Bridging the gap between peer-reviewed veterinary science and real-world bulldog ownership experience.
+    </p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container about-content">
+
+    <h2>Why This Exists</h2>
+    <p>
+      Bulldog owners dealing with chronic skin problems face a frustrating gap: veterinary dermatology literature is excellent but inaccessible, while online community advice is accessible but unvalidated. This handbook bridges that gap.
+    </p>
+    <p>
+      Every piece of community-contributed information in this handbook has been <strong>evidence-checked against the peer-reviewed veterinary dermatology literature</strong>. We don't censor community experience — we contextualize it. When an owner reports that Epsom salt paw soaks helped their dog, we evaluate the mechanism, check the evidence, and publish the result with appropriate caveats.
+    </p>
+
+    <h2>Core Principles</h2>
+    <div class="callout">
+      <strong>Evidence-first, not opinion-first.</strong> Community content is valuable but must be checked. We don't censor — we contextualize.
+    </div>
+    <div class="callout">
+      <strong>The handbook is the anchor.</strong> The static handbook represents the current state of evidence. Community contributions extend it but don't override it.
+    </div>
+    <div class="callout">
+      <strong>Transparency in validation.</strong> Users see the evidence assessment alongside every submission. Nothing is hidden.
+    </div>
+    <div class="callout">
+      <strong>Veterinary care is always recommended.</strong> This site helps owners be better informed, not replace their vet.
+    </div>
+    <div class="callout">
+      <strong>Bulldog-specific, not generic.</strong> Content is tailored to brachycephalic breeds with skin folds. Generic dog health advice is out of scope.
+    </div>
+
+    <h2>Validation Methodology</h2>
+    <p>
+      Community submissions are evaluated through an automated evidence-checking pipeline powered by the Claude AI, followed by community review and optional editorial review by veterinary professionals.
+    </p>
+    <p>
+      Each submission receives a verdict: <strong>Validated</strong> (supported by peer-reviewed literature), <strong>Plausible</strong> (sound mechanism, limited direct evidence), <strong>Unsubstantiated</strong> (no evidence basis found), <strong>Harmful</strong> (could cause harm), or <strong>Needs Context</strong> (depends on clinical circumstances).
+    </p>
+    <p>
+      Submissions flagged as <strong>Harmful</strong> are immediately rejected with a safety explanation. All other submissions go through a 48-hour community review period before moving to the verified feed.
+    </p>
+
+    <h2>What We Do NOT Publish</h2>
+    <p>
+      Claims that supplements can "cure" allergies or yeast permanently. Anti-veterinary sentiment. Recommendations for substances toxic to dogs. Unvalidated diagnostic claims. Promotion of unreliable commercial food allergy tests. Misinformation about dietary yeast causing Malassezia dermatitis.
+    </p>
+
+    <h2>References</h2>
+    <ul class="ref-list">
+      <li><span>[1]</span> PMC/NIH. Canine Malassezia dermatitis: diagnosis and clinical significance. PMC5603939.</li>
+      <li><span>[2]</span> Hobi S et al. Malassezia dermatitis in dogs and cats. Vet J. 2024;304:106084.</li>
+      <li><span>[3]</span> ACVD Task Force on Canine Atopic Dermatitis: Malassezia as a complication.</li>
+      <li><span>[4]</span> dvm360. The latest in diagnosis and management of Malassezia dermatitis. 2026.</li>
+      <li><span>[5]</span> Hensel P et al. Canine atopic dermatitis: detailed guidelines. BMC Vet Res. 2015.</li>
+      <li><span>[6]</span> Vet4Bulldog. Atopic Dermatitis in Bulldogs. Updated 2025.</li>
+      <li><span>[7]</span> Today's Veterinary Practice. Canine Hypothyroidism. 2022.</li>
+      <li><span>[8]</span> VCA Animal Hospitals. Hypothyroidism in Dogs.</li>
+      <li><span>[9]</span> MSD Veterinary Manual. Hypothyroidism in Animals.</li>
+      <li><span>[10]</span> PMC/NIH. Malassezia species and its significance in canine skin disease. PMC9754143.</li>
+      <li><span>[11]</span> VCA Animal Hospitals. Povidone Iodine Topical.</li>
+      <li><span>[12]</span> White-Weithers N, Medleau L. Topical therapies for dermatophytes. JAAHA. 1995.</li>
+      <li><span>[13]</span> Nardoni S et al. Herbal antifungal formulation in canine Malassezia. J Mycol Med. 2014.</li>
+      <li><span>[14]</span> Veterinary Partner (VIN). Malassezia Dermatitis. Updated 2024.</li>
+      <li><span>[15]</span> AKC. Yeast Dermatitis (Malassezia) in Dogs. 2024.</li>
+      <li><span>[16]</span> BluePearl Pet Hospital. Malassezia (Yeast Dermatitis) in Dogs and Cats. 2024.</li>
+      <li><span>[17]</span> PMC. Antifungal Efficacy of Selected Plant Essential Oils Against M. pachydermatis. PMC12734713.</li>
+      <li><span>[C1]</span> r/Bulldogs. "Yeasty paws help." Community thread, ~64 upvotes, 53 comments.</li>
+    </ul>
+
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:24px;">
+      <div>
+        <div style="font-size:var(--size-md); font-weight:700; color:var(--accent); letter-spacing:2px;">BULLDOGDERM</div>
+      </div>
+      <div style="display:flex; gap:24px; font-size:var(--size-sm);">
+        <a href="/">Home</a>
+        <a href="handbook.html">Handbook</a>
+      </div>
+    </div>
+    <div class="disclaimer">
+      This site is for educational and informational purposes only. It does not constitute veterinary advice. All diagnostic and treatment decisions should be made in consultation with a licensed veterinarian.
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

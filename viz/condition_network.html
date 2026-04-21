@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Condition Network — BulldogDerm</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #0a0a0a;
+      color: #d0d0d0;
+      font-family: 'JetBrains Mono', monospace;
+      overflow: hidden;
+      height: 100vh;
+    }
+    canvas { display: block; cursor: crosshair; }
+
+    /* Header */
+    .header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 10;
+      padding: 16px 24px;
+      background: linear-gradient(to bottom, rgba(10,10,10,0.95), transparent);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .header-left { display: flex; align-items: center; gap: 16px; }
+    .back {
+      font-size: 0.65rem; color: #777; text-decoration: none;
+      letter-spacing: 2px; text-transform: uppercase;
+    }
+    .back:hover { color: #d4a060; }
+    .title {
+      font-size: 0.75rem; font-weight: 600; color: #d4a060;
+      letter-spacing: 3px; text-transform: uppercase;
+    }
+
+    /* Legend */
+    .legend {
+      position: fixed; bottom: 20px; left: 20px; z-index: 10;
+      background: rgba(17,17,17,0.9); border: 1px solid #1e1e1e;
+      border-radius: 6px; padding: 16px 20px;
+      backdrop-filter: blur(8px);
+    }
+    .legend-title {
+      font-size: 0.55rem; font-weight: 600; letter-spacing: 2px;
+      text-transform: uppercase; color: #777; margin-bottom: 10px;
+    }
+    .legend-item {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 0.65rem; color: #999; margin-bottom: 6px;
+    }
+    .legend-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+    }
+
+    /* Detail Panel */
+    .detail-panel {
+      position: fixed; top: 0; right: 0; width: 360px; height: 100%;
+      background: rgba(15,15,15,0.95); border-left: 1px solid #1e1e1e;
+      z-index: 20; transform: translateX(100%); transition: transform 0.3s ease;
+      overflow-y: auto; padding: 80px 24px 24px;
+      backdrop-filter: blur(12px);
+    }
+    .detail-panel.open { transform: translateX(0); }
+    .detail-close {
+      position: absolute; top: 20px; right: 20px;
+      background: none; border: 1px solid #333; color: #777;
+      width: 28px; height: 28px; border-radius: 50%;
+      cursor: pointer; font-family: inherit; font-size: 0.7rem;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .detail-close:hover { border-color: #d4a060; color: #d4a060; }
+    .detail-name {
+      font-size: 1rem; font-weight: 700; color: #e8e8e8;
+      margin-bottom: 8px;
+    }
+    .detail-category {
+      display: inline-block; padding: 2px 8px; font-size: 0.55rem;
+      font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+      border-radius: 20px; margin-bottom: 16px;
+    }
+    .detail-desc {
+      font-size: 0.75rem; color: #999; line-height: 1.7; margin-bottom: 20px;
+    }
+    .detail-section-title {
+      font-size: 0.55rem; font-weight: 600; letter-spacing: 2px;
+      text-transform: uppercase; color: #666; margin: 20px 0 10px;
+    }
+    .detail-list {
+      list-style: none; font-size: 0.7rem;
+    }
+    .detail-list li {
+      padding: 4px 0; color: #999; border-bottom: 1px solid #1a1a1a;
+    }
+    .detail-key-fact {
+      border-left: 3px solid #d4a060; padding: 12px 16px;
+      background: rgba(212,160,96,0.05); border-radius: 0 6px 6px 0;
+      font-size: 0.7rem; color: #d4a060; margin-top: 16px;
+      font-weight: 500;
+    }
+
+    /* Instructions */
+    .instructions {
+      position: fixed; bottom: 20px; right: 20px; z-index: 10;
+      font-size: 0.55rem; color: #444; letter-spacing: 1px;
+      text-align: right; line-height: 1.8;
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <a href="../index.html" class="back">Home</a>
+    <div class="title">Condition Network</div>
+  </div>
+</div>
+
+<canvas id="canvas"></canvas>
+
+<div class="legend">
+  <div class="legend-title">Categories</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#cc8844"></div> Infectious</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#5b9bd5"></div> Allergic</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#5a9e6f"></div> Endocrine</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#c04040"></div> Parasitic</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#888"></div> Structural</div>
+</div>
+
+<div class="detail-panel" id="detailPanel">
+  <button class="detail-close" onclick="closeDetail()">&times;</button>
+  <div id="detailContent"></div>
+</div>
+
+<div class="instructions">
+  hover to highlight &middot; click to inspect<br>
+  drag to reposition &middot; scroll to zoom
+</div>
+
+<script>
+const CONDITIONS = [
+  { id: 'malassezia', name: 'Malassezia Dermatitis', category: 'infectious', prevalence: 5,
+    desc: 'Yeast overgrowth of M. pachydermatis on skin surface. Almost always secondary to an underlying condition.',
+    signs: ['Yeasty odor', 'Greasy skin', 'Erythema', 'Pruritus', 'Brown discharge'],
+    sites: ['Skin folds', 'Ears', 'Paws', 'Ventral', 'Lip margins'],
+    related: ['atopic_dermatitis', 'hypothyroidism', 'food_allergy', 'fold_dermatitis', 'pyoderma', 'pododermatitis'],
+    keyFact: 'The yeast is the symptom, not the disease' },
+  { id: 'atopic_dermatitis', name: 'Atopic Dermatitis', category: 'allergic', prevalence: 5,
+    desc: 'Environmental allergy driving skin barrier dysfunction. Single most common underlying cause of recurrent Malassezia in bulldogs.',
+    signs: ['Seasonal pruritus', 'Face rubbing', 'Paw licking', 'Ventral erythema'],
+    sites: ['Face', 'Ears', 'Paws', 'Ventral', 'Axillae'],
+    related: ['malassezia', 'otitis_externa', 'pyoderma', 'food_allergy'],
+    keyFact: 'Atopy is #1 in bulldogs — investigate it for every recurrent case' },
+  { id: 'fold_dermatitis', name: 'Fold Dermatitis', category: 'structural', prevalence: 5,
+    desc: 'Inflammation in skin folds from moisture, friction, and microbe trapping. Breed-specific structural issue.',
+    signs: ['Erythema in folds', 'Malodor', 'Discharge', 'Moisture retention'],
+    sites: ['Facial folds', 'Nose rope', 'Tail fold', 'Vulvar fold', 'Lip folds'],
+    related: ['malassezia', 'pyoderma'],
+    keyFact: 'Daily fold care is baseline maintenance — not optional' },
+  { id: 'otitis_externa', name: 'Otitis Externa', category: 'infectious', prevalence: 4,
+    desc: 'Ear canal inflammation. Often the first clinical manifestation of atopic dermatitis.',
+    signs: ['Head shaking', 'Ear scratching', 'Discharge', 'Odor', 'Pain'],
+    sites: ['Ears'],
+    related: ['atopic_dermatitis', 'malassezia', 'food_allergy'],
+    keyFact: 'Yeast otitis is frequently the first sign of underlying atopy' },
+  { id: 'pyoderma', name: 'Bacterial Pyoderma', category: 'infectious', prevalence: 4,
+    desc: 'Staphylococcal skin infection, concurrent with Malassezia in the majority of cases.',
+    signs: ['Pustules', 'Epidermal collarettes', 'Crusting', 'Papules'],
+    sites: ['Ventral', 'Axillae', 'Groin', 'Interdigital'],
+    related: ['malassezia', 'atopic_dermatitis', 'hypothyroidism'],
+    keyFact: 'Present in the majority of Malassezia cases — treat both' },
+  { id: 'food_allergy', name: 'Food Adverse Reaction', category: 'allergic', prevalence: 3,
+    desc: 'Immune response to dietary protein sources. Blood/saliva tests are unreliable.',
+    signs: ['Non-seasonal pruritus', 'GI signs', 'Perianal pruritus', 'Chronic otitis'],
+    sites: ['Ears', 'Paws', 'Perianal', 'Ventral'],
+    related: ['atopic_dermatitis', 'malassezia', 'otitis_externa'],
+    keyFact: 'Elimination diet is the gold standard — not blood tests' },
+  { id: 'hypothyroidism', name: 'Hypothyroidism', category: 'endocrine', prevalence: 3,
+    desc: 'Thyroid hormone deficiency affecting skin, coat, and immune function.',
+    signs: ['Bilateral alopecia', 'Rat tail', 'Dull coat', 'Weight gain', 'Lethargy'],
+    sites: ['Trunk', 'Tail'],
+    related: ['malassezia', 'pyoderma'],
+    keyFact: 'Need Free T4 + TSH — do not diagnose from low Total T4 alone' },
+  { id: 'cushings', name: "Cushing's Disease", category: 'endocrine', prevalence: 2,
+    desc: 'Excess cortisol production affecting skin integrity and immune defenses.',
+    signs: ['Pot belly', 'Thin skin', 'Calcinosis cutis', 'PU/PD', 'Panting'],
+    sites: ['Trunk', 'Ventral'],
+    related: ['malassezia', 'pyoderma', 'hypothyroidism'],
+    keyFact: 'Elevated ALP and dilute urine are baseline clues' },
+  { id: 'demodicosis', name: 'Demodicosis', category: 'parasitic', prevalence: 3,
+    desc: 'Demodex mite overgrowth. Can mimic or coexist with Malassezia dermatitis.',
+    signs: ['Focal alopecia', 'Follicular casts', 'Erythema', 'Comedones'],
+    sites: ['Face', 'Paws', 'Trunk'],
+    related: ['malassezia', 'pyoderma'],
+    keyFact: 'Rule out with deep skin scraping before attributing all signs to yeast' },
+  { id: 'pododermatitis', name: 'Pododermatitis', category: 'infectious', prevalence: 4,
+    desc: 'Yeast and bacterial infection of interdigital spaces. Moisture is the primary modifiable factor.',
+    signs: ['Paw licking', 'Brown staining', 'Interdigital swelling', 'Lameness'],
+    sites: ['Paws'],
+    related: ['malassezia', 'atopic_dermatitis', 'demodicosis'],
+    keyFact: 'Keeping interdigital spaces dry is the single most important intervention' }
+];
+
+const CATEGORY_COLORS = {
+  infectious: '#cc8844',
+  allergic: '#5b9bd5',
+  endocrine: '#5a9e6f',
+  parasitic: '#c04040',
+  structural: '#888888'
+};
+
+// Canvas setup
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const dpr = window.devicePixelRatio || 1;
+let W, H;
+
+function resize() {
+  W = window.innerWidth;
+  H = window.innerHeight;
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  canvas.style.width = W + 'px';
+  canvas.style.height = H + 'px';
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+resize();
+window.addEventListener('resize', resize);
+
+// Physics nodes
+const nodes = CONDITIONS.map((c, i) => {
+  const angle = (i / CONDITIONS.length) * Math.PI * 2;
+  const radius = 180 + c.prevalence * 15;
+  return {
+    ...c,
+    x: W / 2 + Math.cos(angle) * radius,
+    y: H / 2 + Math.sin(angle) * radius,
+    vx: 0, vy: 0,
+    radius: 12 + c.prevalence * 4,
+    color: CATEGORY_COLORS[c.category],
+    pulsePhase: Math.random() * Math.PI * 2
+  };
+});
+
+// Build edges from `related` arrays
+const edges = [];
+const edgeSet = new Set();
+nodes.forEach(n => {
+  (n.related || []).forEach(rid => {
+    const key = [n.id, rid].sort().join('-');
+    if (!edgeSet.has(key)) {
+      edgeSet.add(key);
+      const target = nodes.find(nn => nn.id === rid);
+      if (target) edges.push({ source: n, target, particles: [] });
+    }
+  });
+});
+
+// Interaction state
+let hoveredNode = null;
+let selectedNode = null;
+let dragNode = null;
+let mouseX = 0, mouseY = 0;
+let zoom = 1;
+let panX = 0, panY = 0;
+let time = 0;
+
+// Mouse events
+canvas.addEventListener('mousemove', e => {
+  mouseX = (e.clientX - panX) / zoom;
+  mouseY = (e.clientY - panY) / zoom;
+  if (dragNode) {
+    dragNode.x = mouseX;
+    dragNode.y = mouseY;
+    dragNode.vx = 0;
+    dragNode.vy = 0;
+    return;
+  }
+  hoveredNode = null;
+  for (const n of nodes) {
+    const dx = n.x - mouseX;
+    const dy = n.y - mouseY;
+    if (Math.sqrt(dx * dx + dy * dy) < n.radius + 5) {
+      hoveredNode = n;
+      canvas.style.cursor = 'pointer';
+      return;
+    }
+  }
+  canvas.style.cursor = 'crosshair';
+});
+
+canvas.addEventListener('mousedown', e => {
+  if (hoveredNode) {
+    dragNode = hoveredNode;
+  }
+});
+
+canvas.addEventListener('mouseup', e => {
+  if (dragNode && hoveredNode === dragNode) {
+    selectedNode = dragNode;
+    showDetail(selectedNode);
+  }
+  dragNode = null;
+});
+
+canvas.addEventListener('wheel', e => {
+  e.preventDefault();
+  const factor = e.deltaY > 0 ? 0.95 : 1.05;
+  zoom *= factor;
+  zoom = Math.max(0.3, Math.min(3, zoom));
+}, { passive: false });
+
+// Force simulation
+function simulate() {
+  // Center gravity
+  nodes.forEach(n => {
+    const dx = W / 2 - n.x;
+    const dy = H / 2 - n.y;
+    n.vx += dx * 0.0003;
+    n.vy += dy * 0.0003;
+  });
+
+  // Repulsion between all nodes
+  for (let i = 0; i < nodes.length; i++) {
+    for (let j = i + 1; j < nodes.length; j++) {
+      const dx = nodes[j].x - nodes[i].x;
+      const dy = nodes[j].y - nodes[i].y;
+      const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+      const minDist = 100;
+      if (dist < minDist) {
+        const force = (minDist - dist) / dist * 0.5;
+        nodes[i].vx -= dx * force * 0.01;
+        nodes[i].vy -= dy * force * 0.01;
+        nodes[j].vx += dx * force * 0.01;
+        nodes[j].vy += dy * force * 0.01;
+      }
+    }
+  }
+
+  // Edge attraction
+  edges.forEach(e => {
+    const dx = e.target.x - e.source.x;
+    const dy = e.target.y - e.source.y;
+    const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+    const idealDist = 200;
+    const force = (dist - idealDist) / dist * 0.003;
+    e.source.vx += dx * force;
+    e.source.vy += dy * force;
+    e.target.vx -= dx * force;
+    e.target.vy -= dy * force;
+  });
+
+  // Damping and update
+  nodes.forEach(n => {
+    if (n === dragNode) return;
+    n.vx *= 0.92;
+    n.vy *= 0.92;
+    n.x += n.vx;
+    n.y += n.vy;
+  });
+}
+
+// Edge particles
+function updateParticles() {
+  edges.forEach(e => {
+    // Spawn particles
+    if (Math.random() < 0.02) {
+      e.particles.push({ t: 0, speed: 0.003 + Math.random() * 0.005 });
+    }
+    // Update
+    e.particles = e.particles.filter(p => {
+      p.t += p.speed;
+      return p.t < 1;
+    });
+  });
+}
+
+// Draw
+function draw() {
+  ctx.save();
+  ctx.translate(panX, panY);
+  ctx.scale(zoom, zoom);
+
+  // Subtle radial glow
+  const grad = ctx.createRadialGradient(W / 2, H / 2, 0, W / 2, H / 2, 400);
+  grad.addColorStop(0, 'rgba(212,160,96,0.02)');
+  grad.addColorStop(1, 'transparent');
+  ctx.fillStyle = grad;
+  ctx.fillRect(-panX / zoom, -panY / zoom, W / zoom, H / zoom);
+
+  // Draw edges
+  edges.forEach(e => {
+    const isHighlighted = hoveredNode && (e.source === hoveredNode || e.target === hoveredNode);
+    const isSelected = selectedNode && (e.source === selectedNode || e.target === selectedNode);
+    const alpha = isHighlighted || isSelected ? 0.4 : 0.08;
+    const width = isHighlighted || isSelected ? 1.5 : 0.5;
+
+    ctx.strokeStyle = `rgba(212,160,96,${alpha})`;
+    ctx.lineWidth = width;
+    ctx.beginPath();
+    ctx.moveTo(e.source.x, e.source.y);
+
+    // Curved edge
+    const mx = (e.source.x + e.target.x) / 2;
+    const my = (e.source.y + e.target.y) / 2;
+    const nx = -(e.target.y - e.source.y) * 0.1;
+    const ny = (e.target.x - e.source.x) * 0.1;
+    ctx.quadraticCurveTo(mx + nx, my + ny, e.target.x, e.target.y);
+    ctx.stroke();
+
+    // Draw particles along edge
+    e.particles.forEach(p => {
+      const t = p.t;
+      const ct = 1 - t;
+      const px = ct * ct * e.source.x + 2 * ct * t * (mx + nx) + t * t * e.target.x;
+      const py = ct * ct * e.source.y + 2 * ct * t * (my + ny) + t * t * e.target.y;
+      const pa = Math.sin(t * Math.PI) * 0.6;
+
+      ctx.beginPath();
+      ctx.arc(px, py, 1.5, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(212,160,96,${pa})`;
+      ctx.fill();
+    });
+  });
+
+  // Draw nodes
+  nodes.forEach(n => {
+    const isHovered = n === hoveredNode;
+    const isSelected = n === selectedNode;
+    const isConnected = hoveredNode && (hoveredNode.related || []).includes(n.id);
+    const pulse = 1 + Math.sin(time * 0.02 + n.pulsePhase) * 0.08;
+    const r = n.radius * pulse;
+
+    // Dim non-connected nodes when hovering
+    let alpha = 1;
+    if (hoveredNode && !isHovered && !isConnected) alpha = 0.2;
+
+    // Glow
+    if (isHovered || isSelected) {
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, r * 2.5, 0, Math.PI * 2);
+      const glow = ctx.createRadialGradient(n.x, n.y, r, n.x, n.y, r * 2.5);
+      glow.addColorStop(0, n.color + '30');
+      glow.addColorStop(1, 'transparent');
+      ctx.fillStyle = glow;
+      ctx.fill();
+    }
+
+    // Outer ring
+    ctx.beginPath();
+    ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
+    ctx.fillStyle = '#111';
+    ctx.globalAlpha = alpha;
+    ctx.fill();
+    ctx.strokeStyle = n.color;
+    ctx.lineWidth = isHovered || isSelected ? 2 : 1;
+    ctx.stroke();
+
+    // Inner filled circle
+    ctx.beginPath();
+    ctx.arc(n.x, n.y, r * 0.6, 0, Math.PI * 2);
+    ctx.fillStyle = n.color;
+    ctx.globalAlpha = alpha * 0.4;
+    ctx.fill();
+    ctx.globalAlpha = 1;
+
+    // Label
+    ctx.globalAlpha = alpha;
+    ctx.font = `${isHovered ? '600' : '400'} ${isHovered ? 11 : 9}px JetBrains Mono`;
+    ctx.textAlign = 'center';
+    ctx.fillStyle = isHovered ? '#e8e8e8' : '#999';
+    ctx.fillText(n.name, n.x, n.y + r + 16);
+    ctx.globalAlpha = 1;
+
+    // Prevalence dots
+    for (let i = 0; i < n.prevalence; i++) {
+      ctx.beginPath();
+      ctx.arc(n.x - (n.prevalence - 1) * 4 + i * 8, n.y + r + 26, 1.5, 0, Math.PI * 2);
+      ctx.fillStyle = n.color;
+      ctx.globalAlpha = alpha * 0.5;
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+  });
+
+  ctx.restore();
+}
+
+function showDetail(node) {
+  const panel = document.getElementById('detailPanel');
+  const content = document.getElementById('detailContent');
+  const catColor = CATEGORY_COLORS[node.category];
+
+  content.innerHTML = `
+    <div class="detail-name">${node.name}</div>
+    <div class="detail-category" style="background:${catColor}20; color:${catColor}; border:1px solid ${catColor}40;">${node.category}</div>
+    <div class="detail-desc">${node.desc}</div>
+
+    <div class="detail-section-title">Clinical Signs</div>
+    <ul class="detail-list">
+      ${node.signs.map(s => `<li>${s}</li>`).join('')}
+    </ul>
+
+    <div class="detail-section-title">Body Sites</div>
+    <ul class="detail-list">
+      ${node.sites.map(s => `<li>${s}</li>`).join('')}
+    </ul>
+
+    <div class="detail-section-title">Connected Conditions</div>
+    <ul class="detail-list">
+      ${(node.related || []).map(rid => {
+        const r = CONDITIONS.find(c => c.id === rid);
+        return r ? `<li style="color:${CATEGORY_COLORS[r.category]}">${r.name}</li>` : '';
+      }).join('')}
+    </ul>
+
+    <div class="detail-key-fact">${node.keyFact}</div>
+  `;
+  panel.classList.add('open');
+}
+
+function closeDetail() {
+  document.getElementById('detailPanel').classList.remove('open');
+  selectedNode = null;
+}
+
+// Animation loop
+function animate() {
+  ctx.clearRect(0, 0, W * dpr, H * dpr);
+  simulate();
+  updateParticles();
+  draw();
+  time++;
+  requestAnimationFrame(animate);
+}
+animate();
+</script>
+</body>
+</html>

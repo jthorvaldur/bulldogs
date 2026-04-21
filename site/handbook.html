@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Handbook — The Bulldog Dermatitis Handbook</title>
+  <link rel="stylesheet" href="css/global.css">
+  <style>
+    .handbook-layout {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      max-width: 1200px;
+      margin: 0 auto;
+      min-height: 100vh;
+    }
+
+    /* Sidebar TOC */
+    .sidebar {
+      position: sticky; top: 56px;
+      height: calc(100vh - 56px);
+      overflow-y: auto;
+      border-right: 1px solid var(--border);
+      padding: 24px 16px;
+      font-size: var(--size-sm);
+    }
+    .sidebar-part {
+      font-size: var(--size-xs); font-weight: 600;
+      letter-spacing: 2px; text-transform: uppercase;
+      color: var(--accent); margin: 20px 0 8px;
+    }
+    .sidebar-part:first-child { margin-top: 0; }
+    .sidebar-link {
+      display: block; padding: 5px 10px;
+      color: var(--text-dim); font-size: 0.6rem;
+      border-radius: 4px; transition: all 0.2s;
+      line-height: 1.5; margin-bottom: 2px;
+      text-decoration: none;
+    }
+    .sidebar-link:hover { color: var(--text); background: var(--bg-card); }
+
+    /* Content */
+    .handbook-content {
+      padding: 40px 48px 80px;
+      max-width: 800px;
+    }
+    .handbook-content h2 {
+      font-size: var(--size-xl); font-weight: 700;
+      color: var(--text-bright); margin: 56px 0 12px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+    .handbook-content h2:first-child { border-top: none; margin-top: 0; }
+    .handbook-content h3 {
+      font-size: var(--size-lg); font-weight: 600;
+      color: var(--accent); margin: 32px 0 12px;
+    }
+    .handbook-content h4 {
+      font-size: var(--size-md); font-weight: 600;
+      color: var(--text); margin: 24px 0 8px;
+    }
+    .handbook-content p {
+      font-size: var(--size-base); color: var(--text-dim);
+      line-height: 1.9; margin-bottom: 14px;
+    }
+    .handbook-content ul, .handbook-content ol {
+      margin: 12px 0; padding-left: 24px;
+    }
+    .handbook-content li {
+      font-size: var(--size-base); color: var(--text-dim);
+      line-height: 1.8; margin-bottom: 6px;
+    }
+    .handbook-content strong { color: var(--text); }
+    .part-header {
+      font-size: var(--size-sm); font-weight: 700;
+      letter-spacing: 4px; text-transform: uppercase;
+      color: var(--accent); margin: 48px 0 8px;
+    }
+
+    .download-bar {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 24px;
+      display: flex; justify-content: space-between;
+      align-items: center; margin-bottom: 32px;
+    }
+    .download-bar-text {
+      font-size: var(--size-sm); color: var(--text-dim);
+    }
+
+    @media (max-width: 768px) {
+      .handbook-layout { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .handbook-content { padding: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">BulldogDerm</a>
+    <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">Menu</button>
+    <ul class="nav-links">
+      <li><a href="handbook.html" class="active">Handbook</a></li>
+      <li><a href="/">Explore</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="handbook-layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-part">I. Understanding</div>
+    <a href="#ch1" class="sidebar-link">1. Why Bulldogs Get Yeast</a>
+    <a href="#ch2" class="sidebar-link">2. The Diagnostic Question</a>
+
+    <div class="sidebar-part">II. Diagnostic Workup</div>
+    <a href="#ch3" class="sidebar-link">3. Cutaneous Cytology</a>
+    <a href="#ch4" class="sidebar-link">4. Clinical Patterns</a>
+    <a href="#ch5" class="sidebar-link">5. Underlying Causes</a>
+    <a href="#ch6" class="sidebar-link">6. Laboratory Panel</a>
+    <a href="#ch7" class="sidebar-link">7. Diagnostic Sequence</a>
+
+    <div class="sidebar-part">III. Treatment</div>
+    <a href="#ch8" class="sidebar-link">8. First-Line Topical</a>
+    <a href="#ch9" class="sidebar-link">9. Community-Tested</a>
+    <a href="#ch10" class="sidebar-link">10. Low-Stress Protocol</a>
+    <a href="#ch11" class="sidebar-link">11. Systemic Antifungals</a>
+    <a href="#ch12" class="sidebar-link">12. Pruritus Management</a>
+
+    <div class="sidebar-part">IV. Environment</div>
+    <a href="#ch13" class="sidebar-link">13. Indoor Management</a>
+    <a href="#ch14" class="sidebar-link">14. Outdoor Allergens</a>
+    <a href="#ch15" class="sidebar-link">15. Skin Fold Hygiene</a>
+    <a href="#ch16" class="sidebar-link">16. Nutrition</a>
+    <a href="#ch17" class="sidebar-link">17. Environmental Toxins</a>
+
+    <div class="sidebar-part">V. Long-Term</div>
+    <a href="#ch18" class="sidebar-link">18. Maintenance Framework</a>
+    <a href="#ch19" class="sidebar-link">19. Immunotherapy</a>
+    <a href="#ch20" class="sidebar-link">20. When to Escalate</a>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="handbook-content">
+
+    <div class="download-bar">
+      <div class="download-bar-text">The complete handbook is also available as a downloadable PDF</div>
+      <a href="bulldog_dermatitis_handbook.pdf" class="btn btn-ghost" download style="font-size:0.6rem; padding:6px 14px;">Download PDF</a>
+    </div>
+
+    <!-- PART I -->
+    <div class="part-header">Part I: Understanding the Problem</div>
+
+    <h2 id="ch1">1. Clinical Framing: Why Bulldogs Get Yeast Infections</h2>
+    <p>A bulldog presenting with yeasty odor, ventral alopecia, pruritus concentrated in skin folds and intertriginous zones, and erythema at warm moist body sites is exhibiting the classic presentation of Malassezia pachydermatis overgrowth. However, Malassezia dermatitis is almost always a secondary problem — the yeast is not the disease, it is a consequence of an underlying condition that has disrupted the cutaneous barrier, altered the skin microclimate, or compromised local immune defenses.</p>
+    <p>The most common underlying drivers are <strong>atopic dermatitis</strong> (environmental allergies), <strong>food adverse reactions</strong>, <strong>hypothyroidism</strong>, <strong>hyperadrenocorticism</strong> (Cushing's disease), keratinization defects, ectoparasitic disease, and structural anatomy (skin folds).</p>
+    <p>Bulldogs are anatomically predisposed to Malassezia overgrowth due to extensive skin folds, interdigital compression, brachycephalic anatomy, and breed-associated atopic dermatitis prevalence. English Bulldogs, French Bulldogs, and other brachycephalic breeds with skin folds are among the most commonly affected breeds.</p>
+    <p><strong>Malassezia pachydermatis</strong> is a lipophilic, non-lipid-dependent yeast that is part of the normal canine skin flora. It colonizes skin folds, ear canals, interdigital spaces, lip margins, and mucocutaneous junctions in healthy dogs. Overgrowth occurs when the skin microenvironment shifts — through increased moisture, altered lipid composition, barrier disruption from scratching, or immune dysregulation. Under microscopy, M. pachydermatis appears as 3-8 um round-to-oval or classic "peanut-shaped" budding organisms.</p>
+
+    <h2 id="ch2">2. The Diagnostic Question That Must Be Answered</h2>
+    <div class="callout">
+      The question is not "Does my dog have yeast?" Malassezia is a commensal organism; all dogs carry it. The question is: <strong>"What underlying condition is allowing the yeast to overgrow, and how do I confirm Malassezia is actually contributing to the clinical signs?"</strong> Without answering the 'why,' any topical or systemic antifungal treatment will produce temporary improvement followed by relapse.
+    </div>
+    <p>This is the pattern that frustrates bulldog owners: treat the yeast, it clears temporarily, it comes back. The yeast keeps coming back because the underlying cause — usually atopic dermatitis — is still active. The itch drives scratching, scratching disrupts the skin barrier, the disrupted barrier allows yeast and bacteria to proliferate, the overgrowth amplifies the itch, and the overgrowth amplifies the itch. Breaking this cycle requires addressing both the infection and the underlying cause simultaneously.</p>
+
+    <!-- PART II -->
+    <div class="part-header">Part II: Diagnostic Workup</div>
+
+    <h2 id="ch3">3. Confirming Malassezia with Cutaneous Cytology</h2>
+    <p>Cytology is the diagnostic cornerstone. A yeasty smell is suggestive but not diagnostic. The American College of Veterinary Dermatology (ACVD) consensus states that cytology should be performed before initiating antifungal therapy. Trial therapy without cytological confirmation is of minimal benefit and can create diagnostic confusion.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Method</th><th>Technique</th><th>When to Use</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Acetate tape impression</strong></td><td>Press clear tape firmly against affected skin. Place over a drop of methylene blue or Diff-Quik stain. Examine under 100x oil immersion.</td><td>Preferred for most body sites. Easy, fast, minimally invasive.</td></tr>
+          <tr><td><strong>Direct slide impression</strong></td><td>Press a clean glass slide directly against moist, exudative, or greasy skin. Stain with Diff-Quik.</td><td>Abundant discharge or exudate. Good for ear cytology.</td></tr>
+          <tr><td><strong>Superficial skin scraping</strong></td><td>Gently scrape surface of dry or scaly skin with a scalpel blade. Transfer to slide, stain, examine.</td><td>Dry or scaly areas where impression methods yield insufficient material.</td></tr>
+          <tr><td><strong>Cotton swab</strong></td><td>Roll sterile cotton swab over affected area, then roll onto a glass slide. Stain and examine.</td><td>Narrow spaces: ear canals, interdigital webs, deep skin folds.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>Interpreting results:</strong> There is no universally agreed threshold number of organisms. General guidance: any field with &gt;1 organism, or 1 organism per 5-10 oil immersion fields, is compatible with Malassezia dermatitis when clinical signs are present. Even low numbers on cytology from inflamed, pruritic skin may be clinically significant because host hypersensitivity response — not organism burden — drives severity in many dogs.</p>
+
+    <h2 id="ch4">4. Classifying the Clinical Pattern</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Pattern</th><th>Typical Sites</th><th>Differential Considerations</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Fold dermatitis</strong></td><td>Facial folds, lip folds, tail fold, vulvar fold, axillary folds</td><td>Primarily anatomical; may not require deep investigation. Common in bulldogs as a breed-specific structural issue.</td></tr>
+          <tr><td><strong>Ventral / intertriginous</strong></td><td>Ventral neck, axillae, groin, medial thighs, ventral abdomen</td><td>Strong association with atopic dermatitis. Often signals underlying allergic disease requiring systematic workup.</td></tr>
+          <tr><td><strong>Pedal (pododermatitis)</strong></td><td>Interdigital spaces, nail beds, paw pads</td><td>Yeast thrives between toes due to moisture. Rule out concurrent demodicosis. Interdigital cysts may be present.</td></tr>
+          <tr><td><strong>Otitis externa</strong></td><td>Ear canals, conchal bowl</td><td>Very common with allergic disease. Yeast otitis is frequently the first clinical manifestation of atopic dermatitis.</td></tr>
+          <tr><td><strong>Generalized / truncal</strong></td><td>Widespread distribution across trunk, extremities</td><td>Consider hypothyroidism, hyperadrenocorticism, or severe/chronic atopic dermatitis.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 id="ch5">5. Investigating the Underlying Cause</h2>
+    <div class="callout-danger callout">
+      This is the most important step and the one most often skipped. Treating yeast without identifying the underlying cause guarantees relapse.
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Underlying Cause</th><th>Clinical Clues</th><th>Diagnostic Approach</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Atopic dermatitis</strong></td><td>Seasonal or perennial pruritus; face rubbing, paw licking, ventral erythema; onset 1-3 years; family history</td><td>Clinical diagnosis based on history + exclusion (Favrot criteria). IDT or serum IgE for immunotherapy planning. Referral to DACVD.</td></tr>
+          <tr><td><strong>Food adverse reaction</strong></td><td>Non-seasonal pruritus; GI signs may or may not be present; perianal pruritus; chronic otitis</td><td>Strict elimination diet trial for 8-12 weeks. No other food, treats, flavored meds. Blood/saliva tests are unreliable.</td></tr>
+          <tr><td><strong>Hypothyroidism</strong></td><td>Bilateral symmetric alopecia (non-pruritic); lethargy; weight gain; "rat tail"; dull coat</td><td>Thyroid panel: Total T4, Free T4 by equilibrium dialysis, and TSH. Do not diagnose from low Total T4 alone.</td></tr>
+          <tr><td><strong>Hyperadrenocorticism</strong></td><td>PU/PD; polyphagia; pot belly; thin skin; calcinosis cutis; muscle wasting</td><td>ACTH stim test or low-dose dex suppression test. Urine cortisol:creatinine ratio as screening.</td></tr>
+          <tr><td><strong>Ectoparasites</strong></td><td>Demodicosis: focal or generalized alopecia. Sarcoptic mange: intense pruritus, ear margins, elbows.</td><td>Deep skin scraping for Demodex; superficial scraping for Sarcoptes (low sensitivity). Strict flea prevention.</td></tr>
+          <tr><td><strong>Environmental factors</strong></td><td>Seasonal worsening; correlation with specific buildings; high humidity; poor ventilation</td><td>Environmental assessment: humidity, moisture, ventilation, mold inspection.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 id="ch6">6. Recommended Laboratory Panel</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Priority</th><th>Tests</th><th>Rationale</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Immediate (in-clinic)</strong></td><td>Cutaneous cytology from all affected sites; skin scraping for Demodex; ear cytology if otitis present</td><td>Confirms Malassezia presence and burden; identifies concurrent bacterial infection; rules out demodicosis.</td></tr>
+          <tr><td><strong>Baseline bloodwork</strong></td><td>CBC with differential; serum chemistry panel; urinalysis</td><td>Screens for systemic disease. Hypercholesterolemia suggests hypothyroidism. Elevated ALP and dilute urine suggest Cushing's.</td></tr>
+          <tr><td><strong>Thyroid panel</strong></td><td>Total T4; Free T4 by equilibrium dialysis; canine TSH</td><td>Required when alopecia is bilateral/symmetric and non-pruritic, or when pruritus resolves but alopecia persists.</td></tr>
+          <tr><td><strong>Allergy workup</strong></td><td>Elimination diet trial (food); IDT or serum IgE testing (environmental); referral to DACVD</td><td>Environmental atopic dermatitis is the single most common underlying cause of recurrent Malassezia in bulldogs.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 id="ch7">7. Recommended Diagnostic Sequence</h2>
+    <p>See the <a href="viz/diagnostic_tree.html">interactive diagnostic flowchart</a> for a step-by-step walkthrough.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Step</th><th>Action</th><th>Decision Logic</th></tr></thead>
+        <tbody>
+          <tr><td><strong>1</strong></td><td>Perform cutaneous cytology at all affected sites</td><td>Confirm Malassezia and/or bacteria. Photograph lesion distribution.</td></tr>
+          <tr><td><strong>2</strong></td><td>Initiate topical antifungal/antibacterial therapy</td><td>Treat active infection while workup proceeds. 2-3 week minimum course.</td></tr>
+          <tr><td><strong>3</strong></td><td>Perform deep skin scraping to rule out Demodex</td><td>Demodicosis can mimic or coexist with Malassezia dermatitis.</td></tr>
+          <tr><td><strong>4</strong></td><td>Draw baseline bloodwork</td><td>Screen for metabolic and endocrine disease.</td></tr>
+          <tr><td><strong>5</strong></td><td>Re-evaluate at 3-4 weeks</td><td>Repeat cytology, assess clinical response. Determines next steps.</td></tr>
+          <tr><td><strong>6</strong></td><td>Address underlying cause based on findings</td><td>Allergy: elimination diet/dermatologist referral. Endocrine: thyroid/adrenal testing.</td></tr>
+          <tr><td><strong>7</strong></td><td>Establish long-term maintenance protocol</td><td>Recurrence is expected if underlying cause is chronic. Maintenance prevents relapse.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- PART III -->
+    <div class="part-header">Part III: Treatment</div>
+
+    <h2 id="ch8">8. First-Line Topical Therapy: Evidence-Based</h2>
+    <p>The strongest evidence supports topical therapy as the initial treatment, with a consensus recommendation for shampoos containing <strong>2% miconazole + 2% chlorhexidine</strong> applied twice weekly with a 10-minute contact time. This is the current gold standard.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Agent</th><th>Evidence</th><th>Mechanism</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Miconazole 2% + CHG 2%</strong></td><td><span class="badge badge-validated">Strong</span></td><td>Dual-action: azole antifungal + broad antiseptic</td><td>Primary protocol. Multiple commercial products (Malaseb, Douxo S3 Pyo). Must maintain contact time.</td></tr>
+          <tr><td><strong>Chlorhexidine 2%</strong></td><td><span class="badge badge-plausible">Moderate</span></td><td>Antiseptic with activity against bacteria and yeast</td><td>Good adjunct; wipe/mousse formats useful for fold treatment between baths.</td></tr>
+          <tr><td><strong>Ketoconazole 1-2%</strong></td><td><span class="badge badge-plausible">Moderate</span></td><td>Azole antifungal</td><td>Alternative when combination products unavailable.</td></tr>
+          <tr><td><strong>Clotrimazole cream</strong></td><td><span class="badge badge-plausible">Moderate</span></td><td>OTC azole antifungal (Lotrimin)</td><td>Spot treatment for small focal lesions. Prevent licking for 20-30 min.</td></tr>
+          <tr><td><strong>Acetic acid (vinegar)</strong></td><td><span class="badge badge-community">Low-Mod</span></td><td>Acidifies skin surface</td><td>Low cost, low risk. Dilute 1:1 to 1:2 with water. Maintenance rinse.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 id="ch9">9. Community-Tested Topical Approaches: Evidence-Checked</h2>
+    <p>The following approaches are commonly recommended by experienced bulldog owners in online communities. Each is evaluated against the veterinary dermatology evidence base.</p>
+
+    <h4>Povidone-Iodine (Betadine) Paw Soaks</h4>
+    <p>Dilute 10% povidone-iodine with lukewarm water to the color of iced tea (~0.1-1% concentration). Soak paws 3-5 minutes, front and back separately. Can also be used as a full-body wipe-down.</p>
+    <div class="callout-health callout">
+      <strong>Evidence check: SOUND.</strong> Povidone-iodine is a well-established veterinary antiseptic with broad-spectrum activity against bacteria, fungi, viruses, and yeasts. Non-toxic if licked after drying, non-irritating at proper dilution. Best role: paw soaks and fold cleaning as adjunct, not sole antifungal for moderate-to-severe disease.
+    </div>
+
+    <h4>Epsom Salt (Magnesium Sulfate) Paw Soaks</h4>
+    <p>Dissolve Epsom salt in warm water. Soak paws 5-10 minutes, morning and evening. Dry thoroughly.</p>
+    <div class="callout">
+      <strong>Evidence check: PLAUSIBLE, LIMITED EVIDENCE.</strong> Magnesium sulfate is a hypertonic solution that draws fluid from swollen tissue (osmotic effect), providing an astringent/drying action. The drying effect is relevant because moisture is the primary modifiable factor in interdigital yeast overgrowth. Caution: do not let the dog drink the soak water.
+    </div>
+
+    <h4>Chlorhexidine 2% Solution Spray</h4>
+    <p>Purchase a gallon of 2% chlorhexidine gluconate solution. Dilute approximately 1 tablespoon per liter of water. Spray paper towels and clean paws daily.</p>
+    <div class="callout-health callout">
+      <strong>Evidence check: STRONG.</strong> This is essentially a dilute version of the ACVD-recommended chlorhexidine protocol, adapted for daily maintenance between baths. Cost-effective strategy for long-term maintenance.
+    </div>
+
+    <h4>Coconut Oil</h4>
+    <p>Apply virgin coconut oil topically to affected skin areas.</p>
+    <div class="callout">
+      <strong>Evidence check: PARTIALLY SOUND.</strong> Coconut oil contains lauric acid and capric acid with demonstrated in vitro antifungal activity against Candida species. However, no published clinical trial demonstrates standalone efficacy against M. pachydermatis. <strong>Caution in bulldogs:</strong> applying oil to fold areas may increase moisture retention, potentially worsening the warm-moist microenvironment. Use on exposed, non-fold skin only.
+    </div>
+
+    <h2 id="ch10">10. Recommended Integrated Low-Stress Protocol</h2>
+    <p>See the <a href="viz/treatment_flow.html">treatment flow visualization</a> for an interactive view of this protocol.</p>
+    <ul>
+      <li><strong>Primary antifungal bath:</strong> 2% miconazole + 2% chlorhexidine shampoo, twice weekly, 10-minute contact time. Lather all affected areas and folds. Rinse completely. Pat dry all folds.</li>
+      <li><strong>Daily paw cleaning:</strong> Dilute chlorhexidine spray/wipe applied to paws, between all toes, and undersides. Twice daily during active infection; once daily for maintenance.</li>
+      <li><strong>Paw soaks (alternating):</strong> Dilute povidone-iodine foot soaks for 3-5 minutes, OR Epsom salt soaks for 5-10 minutes. Alternate days. Pat dry thoroughly.</li>
+      <li><strong>Between-bath fold care:</strong> Chlorhexidine or miconazole wipes for daily fold cleaning (facial folds, tail fold, vulvar fold, interdigital spaces). Wipe, then pat completely dry.</li>
+      <li><strong>Spot treatment:</strong> OTC clotrimazole (Lotrimin) cream applied to small focal lesions 1-2x daily. Prevent licking for 20-30 minutes.</li>
+      <li><strong>Emollient support:</strong> Coconut oil applied sparingly to exposed, non-fold skin areas after bathing if skin is excessively dry. Avoid fold zones.</li>
+      <li><strong>Ear care:</strong> If ear cytology confirms yeast, use veterinary-prescribed otic antifungal. Routine cleaning with drying ear cleaner after baths or swimming.</li>
+    </ul>
+
+    <h2 id="ch11">11. Systemic Antifungal Therapy</h2>
+    <p>Reserved for cases where topical therapy alone is insufficient, infection is widespread or involves nail beds, or the patient cannot tolerate bathing.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Drug</th><th>Protocol</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Itraconazole</strong></td><td>5 mg/kg once daily for 21-30 days, or pulse (2 consecutive days/week)</td><td>Often preferred over ketoconazole. Hepatotoxicity monitoring recommended.</td></tr>
+          <tr><td><strong>Ketoconazole</strong></td><td>5-10 mg/kg once daily for 21-30 days</td><td>Effective but higher hepatotoxicity risk. Give with food.</td></tr>
+          <tr><td><strong>Cefpodoxime</strong></td><td>5-10 mg/kg once daily for 21-28 days</td><td>Antibiotic for concurrent bacterial pyoderma, not antifungal.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 id="ch12">12. Pruritus Management</h2>
+    <p>Pruritus drives self-trauma, which perpetuates the infection cycle. Managing itch is therapeutic, not cosmetic.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Approach</th><th>Mechanism</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Oclacitinib (Apoquel)</strong></td><td>JAK inhibitor; blocks IL-31 and other itch cytokines</td><td>Fast onset (hours). Short-term flare use well-tolerated. Not recommended &lt;12 months age.</td></tr>
+          <tr><td><strong>Lokivetmab (Cytopoint)</strong></td><td>Monoclonal antibody targeting IL-31. Injection every 4-8 weeks.</td><td>Minimal systemic side effects. Community-validated as the single most impactful intervention. Preferred for dogs where daily oral medication is stressful.</td></tr>
+          <tr><td><strong>Prednisone</strong></td><td>Broad corticosteroid anti-inflammatory</td><td>Short-term tapering only. Long-term use worsens infections and causes iatrogenic Cushing's.</td></tr>
+          <tr><td><strong>Environmental modification</strong></td><td>Reduce allergen contact: wipe paws after walks, wash bedding weekly, HEPA filtration, dehumidify &lt;50% RH</td><td>No side effects. Part of long-term strategy.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- PART IV -->
+    <div class="part-header">Part IV: Environmental and Nutritional Strategy</div>
+
+    <h2 id="ch13">13. Indoor Environmental Management</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Factor</th><th>Target</th><th>Implementation</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Humidity</strong></td><td>Indoor RH &lt;50%</td><td>Dehumidifier during humid months. Monitor with hygrometer.</td></tr>
+          <tr><td><strong>Air quality</strong></td><td>Reduce airborne allergens/mold</td><td>HEPA filtration in rooms where dog sleeps. Regular HVAC maintenance.</td></tr>
+          <tr><td><strong>Bedding</strong></td><td>Minimize allergen reservoirs</td><td>Wash dog bedding weekly in hot water (&gt;130F). Use washable, breathable fabric.</td></tr>
+          <tr><td><strong>Flooring</strong></td><td>Reduce allergen accumulation</td><td>Hard flooring superior to carpet. HEPA-filtered vacuum 2x/week if carpet present.</td></tr>
+          <tr><td><strong>Mold</strong></td><td>Identify and remediate moisture</td><td>Inspect for leaks, condensation, visible mold. Fix moisture sources.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 id="ch14">14. Outdoor and Contact Allergen Management</h2>
+    <ul>
+      <li><strong>Paw wiping after every walk:</strong> Wipe paws with damp cloth or dilute chlorhexidine wipe to remove pollen, grass, and environmental allergens.</li>
+      <li><strong>Belly wipe-down:</strong> For bulldogs with ventral alopecia, wipe ventral abdomen and groin after walks on grass.</li>
+      <li><strong>Post-water drying:</strong> Thoroughly dry all skin folds after any water exposure. Residual moisture in folds is the single most modifiable risk factor for yeast recurrence.</li>
+      <li><strong>Lawn chemicals:</strong> Minimize contact with treated grass. Consider organic lawn care for home property.</li>
+      <li><strong>Road salt (winter):</strong> Wipe or wash paws after winter walks. Salt causes chemical irritation and paw pad cracking.</li>
+    </ul>
+
+    <h2 id="ch15">15. Skin Fold Hygiene: The Non-Negotiable</h2>
+    <div class="callout-danger callout">
+      Skin folds are the single most important modifiable anatomical risk factor in bulldog dermatitis. Daily fold care is not optional — it is baseline maintenance.
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Fold Location</th><th>Frequency</th><th>Protocol</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Facial folds / nose rope</strong></td><td>Daily</td><td>Wipe with chlorhexidine or miconazole wipe. Separate folds, clean between, pat completely dry.</td></tr>
+          <tr><td><strong>Tail fold / tail pocket</strong></td><td>Daily</td><td>Lift tail, wipe fold. If deep and chronically infected, discuss surgical options with vet.</td></tr>
+          <tr><td><strong>Vulvar / inguinal folds</strong></td><td>Daily</td><td>Wipe and dry. Especially important in overweight dogs where folds are deeper.</td></tr>
+          <tr><td><strong>Interdigital spaces</strong></td><td>Daily to every other day</td><td>Inspect between all toes. Povidone-iodine or Epsom salt paw soaks + thorough drying.</td></tr>
+          <tr><td><strong>Axillary / groin folds</strong></td><td>After baths, after exercise</td><td>Trap heat and moisture. Towel-dry thoroughly after any water exposure or heavy panting.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 id="ch16">16. Nutritional Considerations</h2>
+    <h4>Food Quality vs. Food Allergenicity</h4>
+    <p>A dog can eat a high-quality diet and still have a food adverse reaction if the protein source triggers an immune response. Common protein allergens in dogs include beef, chicken, dairy, wheat, and egg. Community data from allergy-tested bulldogs identifies additional triggers: oats, peas, peanuts, turkey, rice, and corn.</p>
+    <p>If recurrent Malassezia persists despite topical treatment and environmental management: <strong>an elimination diet trial is strongly indicated.</strong> Novel protein (venison, rabbit, kangaroo) or hydrolyzed protein diet for 8-12 weeks. No other food, treats, flavored meds, or supplements.</p>
+
+    <h4>Omega-3 Fatty Acid Supplementation</h4>
+    <ul>
+      <li>Source: Fish oil (salmon, sardine, anchovy) or algal oil</li>
+      <li>Dose: EPA + DHA combined ~75-100 mg/kg body weight/day</li>
+      <li>Timeframe: Effects on skin/coat take 4-8 weeks to become apparent</li>
+    </ul>
+
+    <div class="callout-danger callout">
+      <strong>What NOT to do nutritionally:</strong> Do not adopt 'yeast-free' diets or 'anti-yeast' supplement protocols based on consumer marketing. The Malassezia on the dog's skin is M. pachydermatis, which is not related to dietary yeast (Saccharomyces cerevisiae). Do not use raw garlic as an 'antifungal' — Allium species are toxic to dogs.
+    </div>
+
+    <h2 id="ch17">17. Environmental Toxin Assessment</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Category</th><th>Common Sources</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Lawn chemicals</strong></td><td>Pesticides, herbicides (glyphosate, 2,4-D), fertilizers</td><td>Wipe paws/belly after walks on treated grass. Organic lawn care for home.</td></tr>
+          <tr><td><strong>Indoor chemicals</strong></td><td>Floor cleaners, carpet chemicals, air fresheners, dryer sheets</td><td>Pet-safe, fragrance-free products. Rinse floors after mopping.</td></tr>
+          <tr><td><strong>Road salt / de-icers</strong></td><td>Sodium chloride, calcium chloride on roads/sidewalks (winter)</td><td>Wash paws after winter walks. Salt causes irritation and pad cracking.</td></tr>
+          <tr><td><strong>Indoor dampness / mold</strong></td><td>Basements, window condensation, old ductwork</td><td>Environmental inspection and remediation. Mold allergy in dogs is real and testable via IgE.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- PART V -->
+    <div class="part-header">Part V: Long-Term Management</div>
+
+    <h2 id="ch18">18. Maintenance Framework</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Tier</th><th>Component</th><th>Frequency</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Daily</strong></td><td>Skin fold cleaning (all folds). Paw wipe after walks. Visual inspection.</td><td>5-10 min/day</td></tr>
+          <tr><td><strong>Twice weekly</strong></td><td>Antimicrobial bath (miconazole-CHG shampoo, 10-min contact). Twice weekly during flares; weekly to biweekly in remission.</td><td>30-45 min</td></tr>
+          <tr><td><strong>Weekly</strong></td><td>Wash bedding in hot water. Ear inspection and cleaning. Assess overall skin condition.</td><td>Weekly</td></tr>
+          <tr><td><strong>Monthly</strong></td><td>Body condition score. Supplement review. Environmental review (humidity, seasonal allergens).</td><td>Monthly</td></tr>
+          <tr><td><strong>Quarterly</strong></td><td>Veterinary follow-up: cytology of previously affected sites. Recheck bloodwork if on systemic meds.</td><td>Every 3-4 months</td></tr>
+          <tr><td><strong>Annually</strong></td><td>Comprehensive wellness exam with dermatology focus. Thyroid screening if previously considered.</td><td>Annually</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 id="ch19">19. Allergen-Specific Immunotherapy: What to Expect</h2>
+    <p>Allergen-specific immunotherapy (ASIT) is the only treatment that addresses the underlying immune dysfunction in atopic dermatitis, rather than just managing symptoms. It is the closest thing to a 'cure' for environmental allergies in dogs, though it requires commitment.</p>
+    <ul>
+      <li><strong>Testing:</strong> Intradermal skin testing (IDT) or serum allergen-specific IgE, performed by a DACVD-certified veterinary dermatologist.</li>
+      <li><strong>Timeline:</strong> 4-6 month escalation phase with increasing allergen doses, then monthly maintenance injections or sublingual drops.</li>
+      <li><strong>During escalation:</strong> Conventional itch-control medications (Apoquel, Cytopoint) can be used concurrently.</li>
+      <li><strong>Cost:</strong> Significant upfront investment, but long-term cost is often lower than chronic Apoquel/Cytopoint use.</li>
+      <li><strong>Success rate:</strong> 60-80% of dogs show significant improvement. Compliance matters.</li>
+    </ul>
+
+    <h2 id="ch20">20. When to Escalate to Specialist Care</h2>
+    <ul>
+      <li>Malassezia dermatitis that recurs within 2-4 weeks of completing treatment despite topical maintenance</li>
+      <li>Pruritus that persists after infection clearance — indicates underlying atopic dermatitis</li>
+      <li>Alopecia that does not improve despite infection clearance — indicates endocrine disease</li>
+      <li>Chronic otitis failing standard therapy — dermatologist can perform video otoscopy and advanced ear flush</li>
+      <li>Any atypical lesion pattern: deep pyoderma, draining tracts, nodules, non-responsive lesions</li>
+    </ul>
+    <p>Board-certified veterinary dermatologists (DACVD) can perform intradermal allergy testing, formulate allergen-specific immunotherapy, and provide specialized management plans. The ACVD maintains a searchable directory at acvd.org.</p>
+
+    <!-- Summary -->
+    <h2 style="border-top: 2px solid var(--accent);">Summary: The Complete Framework</h2>
+    <div class="callout">
+      <ol style="padding-left: 18px;">
+        <li>Confirm Malassezia on cytology — do not treat blind.</li>
+        <li>Treat with evidence-based topicals (miconazole-CHG shampoo first-line) + adjuncts (iodine soaks, Epsom salt, chlorhexidine spray, clotrimazole spot treatment).</li>
+        <li>Investigate the underlying cause — atopy is #1 in bulldogs.</li>
+        <li>Manage itch to break the scratch-infection cycle (Cytopoint is the community-validated game-changer).</li>
+        <li>Maintain with daily fold care, weekly baths, environmental optimization.</li>
+        <li>Consider immunotherapy for long-term resolution — it requires commitment but can be transformative.</li>
+        <li>Never stop asking why. <strong>The yeast is the symptom, not the disease.</strong></li>
+      </ol>
+    </div>
+
+  </main>
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="disclaimer">
+      This site is for educational and informational purposes only. It does not constitute veterinary advice. All diagnostic and treatment decisions should be made in consultation with a licensed veterinarian. Community-contributed content has been evaluated against veterinary literature but has not been reviewed by a veterinary licensing board.
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

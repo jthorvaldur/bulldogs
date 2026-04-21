@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Bulldog Dermatitis Handbook — Evidence-Based Skin Health</title>
+  <meta name="description" content="Comprehensive, evidence-checked guide to Malassezia dermatitis, alopecia, and skin health in bulldogs. Community-sourced insights validated against veterinary dermatology literature.">
+  <link rel="stylesheet" href="css/global.css">
+  <style>
+    /* Hero */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .hero-canvas {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+    }
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      max-width: 800px;
+      padding: 0 24px;
+    }
+    .hero-badge {
+      display: inline-block;
+      padding: 4px 14px;
+      font-size: var(--size-xs);
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid var(--accent-dim);
+      border-radius: var(--radius-pill);
+      margin-bottom: 24px;
+      animation: fadeIn 0.4s ease-out forwards;
+    }
+    .hero-title {
+      font-size: var(--size-3xl);
+      font-weight: 800;
+      letter-spacing: -1px;
+      color: var(--text-bright);
+      line-height: 1.2;
+      margin-bottom: 16px;
+      animation: fadeIn 0.5s ease-out 0.2s forwards;
+      opacity: 0;
+    }
+    .hero-title span { color: var(--accent); }
+    .hero-subtitle {
+      font-size: var(--size-md);
+      color: var(--text-dim);
+      font-weight: 300;
+      max-width: 600px;
+      margin: 0 auto 32px;
+      line-height: 1.8;
+      animation: fadeIn 0.5s ease-out 0.4s forwards;
+      opacity: 0;
+    }
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: fadeIn 0.5s ease-out 0.6s forwards;
+      opacity: 0;
+    }
+    .hero-scroll {
+      position: absolute;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1;
+      font-size: var(--size-xs);
+      color: var(--text-faint);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    /* Principle */
+    .principle {
+      text-align: center;
+      padding: 60px 24px;
+      background: linear-gradient(180deg, rgba(212,160,96,0.04) 0%, transparent 100%);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .principle-text {
+      font-size: var(--size-lg);
+      font-weight: 300;
+      color: var(--text);
+      letter-spacing: 1px;
+    }
+    .principle-text em {
+      color: var(--accent);
+      font-style: normal;
+      font-weight: 600;
+    }
+
+    /* Viz Grid */
+    .viz-card {
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      text-decoration: none;
+      display: block;
+    }
+    .viz-card canvas {
+      width: 100%;
+      height: 160px;
+      border-radius: var(--radius) var(--radius) 0 0;
+      display: block;
+    }
+    .viz-card-body { padding: 16px 20px; }
+    .viz-card-title {
+      font-size: var(--size-base);
+      font-weight: 600;
+      color: var(--text-bright);
+      margin-bottom: 6px;
+    }
+    .viz-card-desc {
+      font-size: var(--size-sm);
+      color: var(--text-dim);
+      line-height: 1.6;
+    }
+
+    /* Handbook TOC */
+    .toc-part {
+      margin-bottom: 32px;
+    }
+    .toc-part-title {
+      font-size: var(--size-base);
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .toc-list {
+      list-style: none;
+      display: grid;
+      gap: 6px;
+    }
+    .toc-item {
+      font-size: var(--size-base);
+      color: var(--text-dim);
+      padding: 8px 12px;
+      border-radius: var(--radius);
+      transition: all 0.2s;
+      display: flex;
+      gap: 10px;
+      align-items: baseline;
+    }
+    .toc-item:hover { background: var(--bg-card); color: var(--text); }
+    .toc-num {
+      font-size: var(--size-sm);
+      color: var(--text-faint);
+      font-weight: 600;
+      min-width: 24px;
+    }
+
+    /* Framework */
+    .framework-steps {
+      display: grid;
+      gap: 2px;
+      counter-reset: step;
+    }
+    .framework-step {
+      display: grid;
+      grid-template-columns: 48px 1fr;
+      gap: 16px;
+      align-items: start;
+      padding: 16px 20px;
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      transition: background 0.2s;
+    }
+    .framework-step:hover { background: var(--bg-card-hover); }
+    .step-num {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1px solid var(--accent-dim);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--size-sm);
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .step-text {
+      font-size: var(--size-base);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* Evidence */
+    .evidence-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+    }
+    .evidence-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      text-align: center;
+    }
+    .evidence-icon {
+      font-size: var(--size-2xl);
+      margin-bottom: 8px;
+    }
+    .evidence-name {
+      font-size: var(--size-sm);
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .evidence-desc {
+      font-size: var(--size-xs);
+      color: var(--text-dim);
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">BulldogDerm</a>
+    <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">Menu</button>
+    <ul class="nav-links">
+      <li><a href="handbook.html">Handbook</a></li>
+      <li><a href="#visualizations">Explore</a></li>
+      <li><a href="#framework">Framework</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- Hero with Malassezia cell animation -->
+<section class="hero">
+  <canvas class="hero-canvas" id="heroCanvas"></canvas>
+  <div class="hero-content">
+    <div class="hero-badge">Comprehensive Veterinary Reference</div>
+    <h1 class="hero-title">The Bulldog<br><span>Dermatitis</span> Handbook</h1>
+    <p class="hero-subtitle">
+      Evidence-based diagnostic workup, treatment protocols, and community-validated insights for Malassezia dermatitis, alopecia, and skin health in bulldogs.
+    </p>
+    <div class="hero-actions">
+      <a href="handbook.html" class="btn btn-primary">Read the Handbook</a>
+      <a href="bulldog_dermatitis_handbook.pdf" class="btn btn-ghost" download>Download PDF</a>
+    </div>
+  </div>
+  <div class="hero-scroll">Scroll to explore</div>
+</section>
+
+<!-- Principle -->
+<div class="principle">
+  <div class="container">
+    <p class="principle-text">
+      "The yeast is the <em>symptom</em>, not the <em>disease</em>."<br>
+      <span style="font-size:var(--size-sm); color:var(--text-faint); margin-top:8px; display:inline-block;">
+        Every treatment protocol in this handbook starts by asking: what is the underlying cause?
+      </span>
+    </p>
+  </div>
+</div>
+
+<!-- Stats -->
+<section class="section">
+  <div class="container">
+    <div class="stats-bar">
+      <div class="stat-item">
+        <div class="stat-value">20</div>
+        <div class="stat-label">Chapters</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">5</div>
+        <div class="stat-label">Clinical Parts</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">7</div>
+        <div class="stat-label">Step Protocol</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">17+</div>
+        <div class="stat-label">References</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">6</div>
+        <div class="stat-label">Community Remedies</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Interactive Visualizations -->
+<section class="section" id="visualizations">
+  <div class="container">
+    <div class="section-label">Interactive Tools</div>
+    <h2 class="section-title">Explore the Science</h2>
+    <div class="card-grid">
+      <a href="viz/condition_network.html" class="card viz-card">
+        <canvas id="vizPreview1" width="400" height="160"></canvas>
+        <div class="viz-card-body">
+          <div class="viz-card-title">Condition Network</div>
+          <div class="viz-card-desc">Interactive map of how bulldog skin conditions connect and drive each other</div>
+        </div>
+      </a>
+      <a href="viz/body_map.html" class="card viz-card">
+        <canvas id="vizPreview2" width="400" height="160"></canvas>
+        <div class="viz-card-body">
+          <div class="viz-card-title">Body Map</div>
+          <div class="viz-card-desc">Click body regions to see conditions, symptoms, and treatments for each area</div>
+        </div>
+      </a>
+      <a href="viz/treatment_flow.html" class="card viz-card">
+        <canvas id="vizPreview3" width="400" height="160"></canvas>
+        <div class="viz-card-body">
+          <div class="viz-card-title">Treatment Protocol</div>
+          <div class="viz-card-desc">Animated flow through the evidence-based treatment pipeline</div>
+        </div>
+      </a>
+      <a href="viz/diagnostic_tree.html" class="card viz-card">
+        <canvas id="vizPreview4" width="400" height="160"></canvas>
+        <div class="viz-card-body">
+          <div class="viz-card-title">Diagnostic Flowchart</div>
+          <div class="viz-card-desc">Step through the 7-step diagnostic sequence interactively</div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Handbook Overview -->
+<section class="section" id="handbook">
+  <div class="container">
+    <div class="section-label">Complete Reference</div>
+    <h2 class="section-title">Handbook Contents</h2>
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap:24px;">
+
+      <div class="toc-part">
+        <div class="toc-part-title">I. Understanding the Problem</div>
+        <ul class="toc-list">
+          <li class="toc-item"><span class="toc-num">1.</span> Clinical Framing: Why Bulldogs Get Yeast Infections</li>
+          <li class="toc-item"><span class="toc-num">2.</span> The Diagnostic Question That Must Be Answered</li>
+        </ul>
+      </div>
+
+      <div class="toc-part">
+        <div class="toc-part-title">II. Diagnostic Workup</div>
+        <ul class="toc-list">
+          <li class="toc-item"><span class="toc-num">3.</span> Confirming Malassezia with Cutaneous Cytology</li>
+          <li class="toc-item"><span class="toc-num">4.</span> Classifying the Clinical Pattern</li>
+          <li class="toc-item"><span class="toc-num">5.</span> Investigating the Underlying Cause</li>
+          <li class="toc-item"><span class="toc-num">6.</span> Recommended Laboratory Panel</li>
+          <li class="toc-item"><span class="toc-num">7.</span> Diagnostic Sequence</li>
+        </ul>
+      </div>
+
+      <div class="toc-part">
+        <div class="toc-part-title">III. Treatment</div>
+        <ul class="toc-list">
+          <li class="toc-item"><span class="toc-num">8.</span> First-Line Topical Therapy: Evidence-Based</li>
+          <li class="toc-item"><span class="toc-num">9.</span> Community-Tested Approaches: Evaluated</li>
+          <li class="toc-item"><span class="toc-num">10.</span> Recommended Integrated Low-Stress Protocol</li>
+          <li class="toc-item"><span class="toc-num">11.</span> Systemic Antifungal Therapy</li>
+          <li class="toc-item"><span class="toc-num">12.</span> Pruritus Management</li>
+        </ul>
+      </div>
+
+      <div class="toc-part">
+        <div class="toc-part-title">IV. Environment & Nutrition</div>
+        <ul class="toc-list">
+          <li class="toc-item"><span class="toc-num">13.</span> Indoor Environmental Management</li>
+          <li class="toc-item"><span class="toc-num">14.</span> Outdoor and Contact Allergen Management</li>
+          <li class="toc-item"><span class="toc-num">15.</span> Skin Fold Hygiene: The Non-Negotiable</li>
+          <li class="toc-item"><span class="toc-num">16.</span> Nutritional Considerations</li>
+          <li class="toc-item"><span class="toc-num">17.</span> Environmental Toxin Assessment</li>
+        </ul>
+      </div>
+
+      <div class="toc-part">
+        <div class="toc-part-title">V. Long-Term Management</div>
+        <ul class="toc-list">
+          <li class="toc-item"><span class="toc-num">18.</span> Maintenance Framework</li>
+          <li class="toc-item"><span class="toc-num">19.</span> Allergen-Specific Immunotherapy</li>
+          <li class="toc-item"><span class="toc-num">20.</span> When to Escalate to Specialist Care</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Framework -->
+<section class="section" id="framework" style="background: linear-gradient(180deg, rgba(212,160,96,0.03) 0%, transparent 100%);">
+  <div class="container">
+    <div class="section-label">The Complete Framework</div>
+    <h2 class="section-title">7 Steps to Healthy Skin</h2>
+    <div class="framework-steps" style="max-width:700px;">
+      <div class="framework-step">
+        <div class="step-num">1</div>
+        <div class="step-text">Confirm Malassezia on cytology — <strong>do not treat blind</strong></div>
+      </div>
+      <div class="framework-step">
+        <div class="step-num">2</div>
+        <div class="step-text">Treat with evidence-based topicals (miconazole-CHG shampoo first-line) + adjuncts</div>
+      </div>
+      <div class="framework-step">
+        <div class="step-num">3</div>
+        <div class="step-text">Investigate the underlying cause — <strong>atopy is #1 in bulldogs</strong></div>
+      </div>
+      <div class="framework-step">
+        <div class="step-num">4</div>
+        <div class="step-text">Manage itch to break the scratch-infection cycle (Cytopoint is the community game-changer)</div>
+      </div>
+      <div class="framework-step">
+        <div class="step-num">5</div>
+        <div class="step-text">Maintain with daily fold care, weekly baths, environmental optimization</div>
+      </div>
+      <div class="framework-step">
+        <div class="step-num">6</div>
+        <div class="step-text">Consider immunotherapy for long-term resolution — commitment required, transformative results</div>
+      </div>
+      <div class="framework-step">
+        <div class="step-num">7</div>
+        <div class="step-text">Never stop asking why. <strong>The yeast is the symptom, not the disease.</strong></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Evidence Methodology -->
+<section class="section">
+  <div class="container">
+    <div class="section-label">How We Validate</div>
+    <h2 class="section-title">Evidence-Checking Methodology</h2>
+    <p style="color:var(--text-dim); font-size:var(--size-base); max-width:700px; margin-bottom:32px;">
+      Every community-contributed insight is evaluated against the peer-reviewed veterinary dermatology literature before publication.
+    </p>
+    <div class="evidence-grid">
+      <div class="evidence-card">
+        <div class="badge badge-validated" style="font-size:var(--size-sm); padding:4px 12px;">Validated</div>
+        <div class="evidence-desc" style="margin-top:12px;">Supported by peer-reviewed veterinary literature</div>
+      </div>
+      <div class="evidence-card">
+        <div class="badge badge-plausible" style="font-size:var(--size-sm); padding:4px 12px;">Plausible</div>
+        <div class="evidence-desc" style="margin-top:12px;">Sound mechanism but limited direct clinical evidence</div>
+      </div>
+      <div class="evidence-card">
+        <div class="badge badge-community" style="font-size:var(--size-sm); padding:4px 12px;">Unsubstantiated</div>
+        <div class="evidence-desc" style="margin-top:12px;">No evidence basis found; not confirmable</div>
+      </div>
+      <div class="evidence-card">
+        <div class="badge badge-harmful" style="font-size:var(--size-sm); padding:4px 12px;">Harmful</div>
+        <div class="evidence-desc" style="margin-top:12px;">Could cause harm — toxicity, delayed care, dangerous interaction</div>
+      </div>
+      <div class="evidence-card">
+        <div class="badge badge-clinical" style="font-size:var(--size-sm); padding:4px 12px;">Needs Context</div>
+        <div class="evidence-desc" style="margin-top:12px;">Depends on specific clinical circumstances</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div style="display:flex; justify-content:space-between; align-items:start; flex-wrap:wrap; gap:24px;">
+      <div>
+        <div style="font-size:var(--size-md); font-weight:700; color:var(--accent); letter-spacing:2px; margin-bottom:8px;">BULLDOGDERM</div>
+        <div style="color:var(--text-dim); font-size:var(--size-sm);">Evidence-based bulldog skin health</div>
+      </div>
+      <div style="display:flex; gap:24px; font-size:var(--size-sm);">
+        <a href="handbook.html">Handbook</a>
+        <a href="about.html">About</a>
+        <a href="bulldog_dermatitis_handbook.pdf" download>PDF</a>
+      </div>
+    </div>
+    <div class="disclaimer">
+      This site is for educational and informational purposes only. It does not constitute veterinary advice. All diagnostic and treatment decisions should be made in consultation with a licensed veterinarian. Community-contributed content has been evaluated against veterinary literature but has not been reviewed by a veterinary licensing board. If your dog is experiencing a medical emergency, contact your veterinarian or emergency animal hospital immediately.
+    </div>
+  </div>
+</footer>
+
+<script>
+// ============================================
+// Hero Canvas: Animated Malassezia Cells
+// ============================================
+(function() {
+  const canvas = document.getElementById('heroCanvas');
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  let W, H;
+
+  function resize() {
+    W = canvas.clientWidth;
+    H = canvas.clientHeight;
+    canvas.width = W * dpr;
+    canvas.height = H * dpr;
+    ctx.scale(dpr, dpr);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  // Malassezia-inspired cells: round-to-oval with budding
+  class Cell {
+    constructor() {
+      this.reset(true);
+    }
+    reset(init) {
+      this.x = Math.random() * W;
+      this.y = init ? Math.random() * H : -20;
+      this.size = 3 + Math.random() * 6;
+      this.budding = Math.random() > 0.5;
+      this.budAngle = Math.random() * Math.PI * 2;
+      this.budSize = this.size * (0.4 + Math.random() * 0.3);
+      this.vx = (Math.random() - 0.5) * 0.3;
+      this.vy = 0.1 + Math.random() * 0.3;
+      this.rotation = Math.random() * Math.PI * 2;
+      this.rotSpeed = (Math.random() - 0.5) * 0.005;
+      this.alpha = 0.06 + Math.random() * 0.12;
+      this.pulsePhase = Math.random() * Math.PI * 2;
+      this.pulseSpeed = 0.005 + Math.random() * 0.01;
+    }
+    update() {
+      this.x += this.vx;
+      this.y += this.vy;
+      this.rotation += this.rotSpeed;
+      this.pulsePhase += this.pulseSpeed;
+      if (this.y > H + 20 || this.x < -20 || this.x > W + 20) this.reset(false);
+    }
+    draw(ctx, time) {
+      const pulse = 1 + Math.sin(this.pulsePhase) * 0.1;
+      const s = this.size * pulse;
+      const a = this.alpha;
+
+      ctx.save();
+      ctx.translate(this.x, this.y);
+      ctx.rotate(this.rotation);
+      ctx.globalAlpha = a;
+
+      // Main cell body (oval)
+      ctx.beginPath();
+      ctx.ellipse(0, 0, s, s * 0.75, 0, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(212, 160, 96, 0.3)';
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(212, 160, 96, 0.5)';
+      ctx.lineWidth = 0.5;
+      ctx.stroke();
+
+      // Budding daughter cell
+      if (this.budding) {
+        const bx = Math.cos(this.budAngle) * s * 0.8;
+        const by = Math.sin(this.budAngle) * s * 0.6;
+        ctx.beginPath();
+        ctx.arc(bx, by, this.budSize * pulse, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(212, 160, 96, 0.25)';
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(212, 160, 96, 0.4)';
+        ctx.lineWidth = 0.4;
+        ctx.stroke();
+      }
+
+      ctx.restore();
+    }
+  }
+
+  const cells = [];
+  for (let i = 0; i < 80; i++) cells.push(new Cell());
+
+  // Subtle connecting lines between nearby cells
+  function drawConnections(time) {
+    ctx.globalAlpha = 0.04;
+    ctx.strokeStyle = '#d4a060';
+    ctx.lineWidth = 0.5;
+    for (let i = 0; i < cells.length; i++) {
+      for (let j = i + 1; j < cells.length; j++) {
+        const dx = cells[i].x - cells[j].x;
+        const dy = cells[i].y - cells[j].y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 100) {
+          ctx.globalAlpha = 0.03 * (1 - dist / 100);
+          ctx.beginPath();
+          ctx.moveTo(cells[i].x, cells[i].y);
+          ctx.lineTo(cells[j].x, cells[j].y);
+          ctx.stroke();
+        }
+      }
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  // Radial gradient background glow
+  function drawGlow() {
+    const grad = ctx.createRadialGradient(W * 0.5, H * 0.4, 0, W * 0.5, H * 0.4, W * 0.5);
+    grad.addColorStop(0, 'rgba(212, 160, 96, 0.03)');
+    grad.addColorStop(1, 'transparent');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, H);
+  }
+
+  let time = 0;
+  function animate() {
+    ctx.clearRect(0, 0, W, H);
+    drawGlow();
+    drawConnections(time);
+    cells.forEach(c => { c.update(); c.draw(ctx, time); });
+    time++;
+    requestAnimationFrame(animate);
+  }
+  animate();
+})();
+
+// ============================================
+// Visualization Preview Canvases
+// ============================================
+function initPreview(id, drawFn) {
+  const canvas = document.getElementById(id);
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const W = canvas.clientWidth;
+  const H = canvas.clientHeight;
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  ctx.scale(dpr, dpr);
+  let t = 0;
+  function loop() {
+    ctx.clearRect(0, 0, W, H);
+    drawFn(ctx, W, H, t);
+    t++;
+    requestAnimationFrame(loop);
+  }
+  loop();
+}
+
+// Preview 1: Condition Network — orbiting connected nodes
+initPreview('vizPreview1', function(ctx, W, H, t) {
+  const cx = W / 2, cy = H / 2;
+  const colors = ['#d4a060', '#5b9bd5', '#5a9e6f', '#cc8844', '#c04040', '#7ab5cc'];
+  const nodes = [];
+  for (let i = 0; i < 8; i++) {
+    const a = (i / 8) * Math.PI * 2 + t * 0.003;
+    const r = 40 + Math.sin(t * 0.01 + i) * 15;
+    nodes.push({ x: cx + Math.cos(a) * r, y: cy + Math.sin(a) * r, c: colors[i % colors.length], s: 3 + Math.sin(t * 0.02 + i) });
+  }
+  // connections
+  ctx.strokeStyle = 'rgba(212,160,96,0.15)';
+  ctx.lineWidth = 0.5;
+  for (let i = 0; i < nodes.length; i++) {
+    for (let j = i + 1; j < nodes.length; j++) {
+      if (Math.random() > 0.7 || (i + j) % 3 === 0) {
+        ctx.beginPath();
+        ctx.moveTo(nodes[i].x, nodes[i].y);
+        ctx.lineTo(nodes[j].x, nodes[j].y);
+        ctx.stroke();
+      }
+    }
+  }
+  // nodes
+  nodes.forEach(n => {
+    ctx.beginPath();
+    ctx.arc(n.x, n.y, n.s, 0, Math.PI * 2);
+    ctx.fillStyle = n.c;
+    ctx.shadowBlur = 8;
+    ctx.shadowColor = n.c;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+  });
+});
+
+// Preview 2: Body Map — bulldog silhouette with glowing regions
+initPreview('vizPreview2', function(ctx, W, H, t) {
+  const cx = W / 2, cy = H / 2;
+  // Simple bulldog silhouette
+  ctx.fillStyle = 'rgba(212,160,96,0.08)';
+  // Body
+  ctx.beginPath();
+  ctx.ellipse(cx, cy + 10, 50, 30, 0, 0, Math.PI * 2);
+  ctx.fill();
+  // Head
+  ctx.beginPath();
+  ctx.ellipse(cx - 45, cy - 5, 22, 20, -0.2, 0, Math.PI * 2);
+  ctx.fill();
+  // Highlight regions
+  const regions = [
+    { x: cx - 45, y: cy - 5, label: 'head', phase: 0 },
+    { x: cx - 15, y: cy + 30, label: 'paw1', phase: 1 },
+    { x: cx + 25, y: cy + 30, label: 'paw2', phase: 2 },
+    { x: cx, y: cy + 5, label: 'belly', phase: 3 },
+    { x: cx + 40, y: cy, label: 'tail', phase: 4 },
+  ];
+  regions.forEach(r => {
+    const pulse = 0.3 + Math.sin(t * 0.03 + r.phase * 1.5) * 0.2;
+    ctx.beginPath();
+    ctx.arc(r.x, r.y, 8 + Math.sin(t * 0.02 + r.phase) * 2, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(212,160,96,${pulse})`;
+    ctx.shadowBlur = 12;
+    ctx.shadowColor = '#d4a060';
+    ctx.fill();
+    ctx.shadowBlur = 0;
+  });
+});
+
+// Preview 3: Treatment Flow — flowing particles along path
+initPreview('vizPreview3', function(ctx, W, H, t) {
+  const steps = 5;
+  const stepW = W / (steps + 1);
+  ctx.strokeStyle = 'rgba(212,160,96,0.2)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  for (let i = 1; i <= steps; i++) {
+    const x = stepW * i;
+    if (i === 1) ctx.moveTo(x, H / 2);
+    else ctx.lineTo(x, H / 2);
+    // nodes
+    ctx.fillStyle = '#111';
+    ctx.strokeStyle = 'rgba(212,160,96,0.4)';
+    ctx.beginPath();
+    ctx.arc(x, H / 2, 12, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    // step number
+    ctx.fillStyle = '#d4a060';
+    ctx.font = '10px JetBrains Mono';
+    ctx.textAlign = 'center';
+    ctx.fillText(i, x, H / 2 + 4);
+  }
+  // flowing particle
+  const particleX = stepW + ((t * 0.8) % (stepW * (steps - 1)));
+  ctx.beginPath();
+  ctx.arc(particleX, H / 2, 3, 0, Math.PI * 2);
+  ctx.fillStyle = '#d4a060';
+  ctx.shadowBlur = 10;
+  ctx.shadowColor = '#d4a060';
+  ctx.fill();
+  ctx.shadowBlur = 0;
+  // line
+  ctx.strokeStyle = 'rgba(212,160,96,0.15)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(stepW, H / 2);
+  ctx.lineTo(stepW * steps, H / 2);
+  ctx.stroke();
+});
+
+// Preview 4: Diagnostic Tree — branching lines
+initPreview('vizPreview4', function(ctx, W, H, t) {
+  function drawBranch(x, y, len, angle, depth) {
+    if (depth === 0) return;
+    const ex = x + Math.cos(angle) * len;
+    const ey = y + Math.sin(angle) * len;
+    const a = 0.08 + depth * 0.04;
+    ctx.strokeStyle = `rgba(212,160,96,${a})`;
+    ctx.lineWidth = depth * 0.5;
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(ex, ey);
+    ctx.stroke();
+    // node
+    ctx.beginPath();
+    ctx.arc(ex, ey, 2 + depth, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(212,160,96,${a + 0.1})`;
+    ctx.fill();
+    const sway = Math.sin(t * 0.01 + depth + angle) * 0.1;
+    drawBranch(ex, ey, len * 0.65, angle - 0.5 + sway, depth - 1);
+    drawBranch(ex, ey, len * 0.65, angle + 0.5 + sway, depth - 1);
+  }
+  drawBranch(W / 2, H - 10, 35, -Math.PI / 2, 5);
+});
+</script>
+
+</body>
+</html>

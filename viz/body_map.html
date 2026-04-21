@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Body Map — BulldogDerm</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #0a0a0a;
+      color: #d0d0d0;
+      font-family: 'JetBrains Mono', monospace;
+      overflow: hidden;
+      height: 100vh;
+    }
+    canvas { display: block; cursor: pointer; }
+
+    .header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 10;
+      padding: 16px 24px;
+      background: linear-gradient(to bottom, rgba(10,10,10,0.95), transparent);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .header-left { display: flex; align-items: center; gap: 16px; }
+    .back {
+      font-size: 0.65rem; color: #777; text-decoration: none;
+      letter-spacing: 2px; text-transform: uppercase;
+    }
+    .back:hover { color: #d4a060; }
+    .title {
+      font-size: 0.75rem; font-weight: 600; color: #d4a060;
+      letter-spacing: 3px; text-transform: uppercase;
+    }
+    .subtitle {
+      font-size: 0.55rem; color: #555; letter-spacing: 1px;
+      margin-left: auto;
+    }
+
+    /* Side panel */
+    .panel {
+      position: fixed; top: 0; right: 0; width: 380px; height: 100%;
+      background: rgba(15,15,15,0.95); border-left: 1px solid #1e1e1e;
+      z-index: 20; transform: translateX(100%); transition: transform 0.3s ease;
+      overflow-y: auto; padding: 80px 24px 24px;
+      backdrop-filter: blur(12px);
+    }
+    .panel.open { transform: translateX(0); }
+    .panel-close {
+      position: absolute; top: 20px; right: 20px;
+      background: none; border: 1px solid #333; color: #777;
+      width: 28px; height: 28px; border-radius: 50%;
+      cursor: pointer; font-family: inherit; font-size: 0.7rem;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .panel-close:hover { border-color: #d4a060; color: #d4a060; }
+    .panel-region {
+      font-size: 1rem; font-weight: 700; color: #e8e8e8; margin-bottom: 16px;
+    }
+    .condition-card {
+      background: #111; border: 1px solid #1e1e1e; border-radius: 6px;
+      padding: 16px; margin-bottom: 12px;
+    }
+    .condition-card:hover { border-color: #2a2a2a; }
+    .cc-name {
+      font-size: 0.8rem; font-weight: 600; color: #e0e0e0; margin-bottom: 6px;
+    }
+    .cc-desc {
+      font-size: 0.65rem; color: #777; line-height: 1.6; margin-bottom: 10px;
+    }
+    .cc-tag {
+      display: inline-block; font-size: 0.5rem; font-weight: 600;
+      letter-spacing: 1px; text-transform: uppercase; padding: 2px 6px;
+      border-radius: 10px; margin-right: 4px;
+    }
+    .protocol-title {
+      font-size: 0.55rem; font-weight: 600; color: #666;
+      letter-spacing: 2px; text-transform: uppercase; margin: 20px 0 10px;
+    }
+    .protocol-item {
+      font-size: 0.7rem; color: #999; padding: 6px 0;
+      border-bottom: 1px solid #1a1a1a; line-height: 1.6;
+    }
+    .instructions {
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+      font-size: 0.55rem; color: #444; letter-spacing: 1px; text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <a href="../index.html" class="back">Home</a>
+    <div class="title">Interactive Body Map</div>
+  </div>
+  <div class="subtitle">Click a region to explore conditions and care protocols</div>
+</div>
+
+<canvas id="canvas"></canvas>
+
+<div class="panel" id="panel">
+  <button class="panel-close" onclick="closePanel()">&times;</button>
+  <div id="panelContent"></div>
+</div>
+
+<div class="instructions">Click on highlighted body regions to see conditions, symptoms, and treatment protocols</div>
+
+<script>
+const REGIONS = [
+  {
+    id: 'face', name: 'Face & Facial Folds',
+    // Relative positions (0-1 range, will be scaled)
+    cx: 0.22, cy: 0.35, rx: 0.08, ry: 0.07,
+    color: '#d4a060',
+    conditions: [
+      { name: 'Fold Dermatitis (Intertrigo)', desc: 'Inflammation in deep facial folds and nose rope. Daily cleaning is mandatory.', tags: [{ text: 'Structural', color: '#888' }] },
+      { name: 'Atopic Dermatitis', desc: 'Face rubbing and erythema around eyes and muzzle from environmental allergies.', tags: [{ text: 'Allergic', color: '#5b9bd5' }] },
+      { name: 'Demodicosis', desc: 'Focal alopecia around eyes and muzzle. Rule out with deep skin scraping.', tags: [{ text: 'Parasitic', color: '#c04040' }] }
+    ],
+    protocols: [
+      'Daily: wipe facial folds with chlorhexidine or miconazole wipe',
+      'Separate folds, clean between, pat completely dry',
+      'Inspect for erythema, odor, and discharge',
+      'If chronic and deep: discuss surgical options with vet'
+    ]
+  },
+  {
+    id: 'ears', name: 'Ears',
+    cx: 0.18, cy: 0.22, rx: 0.04, ry: 0.05,
+    color: '#5b9bd5',
+    conditions: [
+      { name: 'Otitis Externa', desc: 'Ear canal inflammation — frequently the first sign of underlying atopic dermatitis.', tags: [{ text: 'Infectious', color: '#cc8844' }] },
+      { name: 'Malassezia Otitis', desc: 'Yeast overgrowth in ear canal. Confirm with ear cytology before treating.', tags: [{ text: 'Infectious', color: '#cc8844' }] }
+    ],
+    protocols: [
+      'If cytology confirms yeast: veterinary-prescribed otic antifungal',
+      'Routine cleaning with drying ear cleaner after baths/swimming',
+      'Weekly ear inspection for discharge, odor, redness',
+      'Chronic otitis: consider referral for video otoscopy'
+    ]
+  },
+  {
+    id: 'paws', name: 'Paws & Interdigital Spaces',
+    cx: 0.30, cy: 0.80, rx: 0.05, ry: 0.04,
+    color: '#cc8844',
+    conditions: [
+      { name: 'Pododermatitis', desc: 'Yeast and bacterial infection between toes. Moisture is the primary modifiable factor.', tags: [{ text: 'Infectious', color: '#cc8844' }] },
+      { name: 'Malassezia Dermatitis', desc: 'Yeast thrives between toes due to moisture from sweating.', tags: [{ text: 'Infectious', color: '#cc8844' }] },
+      { name: 'Interdigital Cysts', desc: 'Furuncles between toes. Rule out concurrent demodicosis.', tags: [{ text: 'Structural', color: '#888' }] }
+    ],
+    protocols: [
+      'Daily: dilute chlorhexidine spray between all toes, pat dry',
+      'Alternating paw soaks: povidone-iodine (iced tea color) 3-5 min',
+      'OR Epsom salt soaks 5-10 min, dry thoroughly',
+      'Wipe paws with damp cloth after every outdoor walk',
+      'Keep interdigital spaces DRY — this is the #1 intervention'
+    ]
+  },
+  {
+    id: 'belly', name: 'Ventral / Belly',
+    cx: 0.48, cy: 0.65, rx: 0.12, ry: 0.06,
+    color: '#5a9e6f',
+    conditions: [
+      { name: 'Atopic Dermatitis', desc: 'Ventral erythema and intertriginous pattern. Strong association with environmental allergy.', tags: [{ text: 'Allergic', color: '#5b9bd5' }] },
+      { name: 'Bacterial Pyoderma', desc: 'Pustules and epidermal collarettes on ventral skin. Often concurrent with yeast.', tags: [{ text: 'Infectious', color: '#cc8844' }] },
+      { name: 'Malassezia Dermatitis', desc: 'Greasy, erythematous skin on belly with yeasty odor.', tags: [{ text: 'Infectious', color: '#cc8844' }] }
+    ],
+    protocols: [
+      'Twice weekly: antimicrobial bath with 10-min contact time',
+      'Belly wipe-down after walks on grass (ground-level allergens)',
+      'Miconazole-CHG wipes for daily fold cleaning of inguinal area',
+      'If ventral alopecia: investigate allergy vs endocrine causes'
+    ]
+  },
+  {
+    id: 'tail', name: 'Tail Fold / Pocket',
+    cx: 0.78, cy: 0.42, rx: 0.04, ry: 0.04,
+    color: '#c04040',
+    conditions: [
+      { name: 'Tail Fold Dermatitis', desc: 'Often neglected fold that can develop severe intertrigo. Deep tail pockets are high-risk.', tags: [{ text: 'Structural', color: '#888' }] },
+      { name: 'Malassezia Overgrowth', desc: 'Warm, moist tail fold creates ideal environment for yeast proliferation.', tags: [{ text: 'Infectious', color: '#cc8844' }] }
+    ],
+    protocols: [
+      'Daily: lift tail, wipe fold with chlorhexidine/miconazole wipe',
+      'Pat completely dry — retained moisture is the enemy',
+      'If deep tail pocket with chronic infection: discuss surgical options',
+      'Inspect for erythema, discharge, and odor daily'
+    ]
+  },
+  {
+    id: 'trunk', name: 'Trunk / Back',
+    cx: 0.52, cy: 0.35, rx: 0.14, ry: 0.08,
+    color: '#5a9e6f',
+    conditions: [
+      { name: 'Hypothyroidism', desc: 'Bilateral, symmetric alopecia on trunk. Non-pruritic. "Rat tail" pattern.', tags: [{ text: 'Endocrine', color: '#5a9e6f' }] },
+      { name: "Cushing's Disease", desc: 'Thin skin, calcinosis cutis, truncal alopecia with pot belly.', tags: [{ text: 'Endocrine', color: '#5a9e6f' }] },
+      { name: 'Generalized Demodicosis', desc: 'Widespread alopecia across trunk with follicular casts.', tags: [{ text: 'Parasitic', color: '#c04040' }] }
+    ],
+    protocols: [
+      'If bilateral symmetric alopecia: thyroid panel (T4, Free T4, TSH)',
+      'If thin skin + pot belly: low-dose dex suppression test',
+      'Deep skin scraping to rule out Demodex',
+      'Endocrine alopecia is non-pruritic — distinct from allergy-driven hair loss'
+    ]
+  },
+  {
+    id: 'groin', name: 'Axillae & Groin',
+    cx: 0.38, cy: 0.72, rx: 0.06, ry: 0.04,
+    color: '#7ab5cc',
+    conditions: [
+      { name: 'Atopic Dermatitis', desc: 'Axillary and inguinal erythema classic for environmental allergy.', tags: [{ text: 'Allergic', color: '#5b9bd5' }] },
+      { name: 'Malassezia Dermatitis', desc: 'Warm, moist folds trap moisture and create yeast overgrowth environment.', tags: [{ text: 'Infectious', color: '#cc8844' }] }
+    ],
+    protocols: [
+      'Towel-dry thoroughly after baths and exercise (heat/moisture trap)',
+      'Chlorhexidine wipe of axillary and inguinal folds',
+      'Part of twice-weekly antimicrobial bath protocol',
+      'If overweight: weight management reduces fold depth'
+    ]
+  },
+  {
+    id: 'hindpaws', name: 'Rear Paws',
+    cx: 0.68, cy: 0.82, rx: 0.05, ry: 0.04,
+    color: '#cc8844',
+    conditions: [
+      { name: 'Pododermatitis', desc: 'Same interdigital yeast/bacterial infection as front paws.', tags: [{ text: 'Infectious', color: '#cc8844' }] }
+    ],
+    protocols: [
+      'Same paw soak protocol as front paws',
+      'Pay attention to rear paws after walks — pollen contact',
+      'Wash paws after winter walks (road salt causes irritation)'
+    ]
+  }
+];
+
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const dpr = window.devicePixelRatio || 1;
+let W, H, scale, ox, oy;
+let hoveredRegion = null;
+let selectedRegion = null;
+let time = 0;
+
+function resize() {
+  W = window.innerWidth;
+  H = window.innerHeight;
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  canvas.style.width = W + 'px';
+  canvas.style.height = H + 'px';
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  // Center the bulldog drawing
+  scale = Math.min(W, H) * 0.9;
+  ox = W / 2 - scale * 0.45;
+  oy = H / 2 - scale * 0.45;
+}
+resize();
+window.addEventListener('resize', resize);
+
+function toScreen(rx, ry) {
+  return { x: ox + rx * scale, y: oy + ry * scale };
+}
+
+// Mouse
+canvas.addEventListener('mousemove', e => {
+  const mx = e.clientX;
+  const my = e.clientY;
+  hoveredRegion = null;
+  for (const r of REGIONS) {
+    const p = toScreen(r.cx, r.cy);
+    const dx = (mx - p.x) / (r.rx * scale);
+    const dy = (my - p.y) / (r.ry * scale);
+    if (dx * dx + dy * dy < 1) {
+      hoveredRegion = r;
+      break;
+    }
+  }
+  canvas.style.cursor = hoveredRegion ? 'pointer' : 'default';
+});
+
+canvas.addEventListener('click', e => {
+  if (hoveredRegion) {
+    selectedRegion = hoveredRegion;
+    showPanel(selectedRegion);
+  }
+});
+
+function drawBulldog() {
+  ctx.save();
+
+  // Body outline - simplified bulldog shape
+  const bodyColor = 'rgba(212,160,96,0.06)';
+  const outlineColor = 'rgba(212,160,96,0.15)';
+
+  // Main body (torso)
+  ctx.beginPath();
+  const bc = toScreen(0.50, 0.45);
+  ctx.ellipse(bc.x, bc.y, scale * 0.22, scale * 0.14, 0, 0, Math.PI * 2);
+  ctx.fillStyle = bodyColor;
+  ctx.fill();
+  ctx.strokeStyle = outlineColor;
+  ctx.lineWidth = 1;
+  ctx.stroke();
+
+  // Head
+  ctx.beginPath();
+  const hc = toScreen(0.22, 0.33);
+  ctx.ellipse(hc.x, hc.y, scale * 0.09, scale * 0.1, -0.15, 0, Math.PI * 2);
+  ctx.fillStyle = bodyColor;
+  ctx.fill();
+  ctx.strokeStyle = outlineColor;
+  ctx.stroke();
+
+  // Neck connection
+  ctx.beginPath();
+  ctx.moveTo(toScreen(0.29, 0.28).x, toScreen(0.29, 0.28).y);
+  ctx.lineTo(toScreen(0.34, 0.34).x, toScreen(0.34, 0.34).y);
+  ctx.moveTo(toScreen(0.29, 0.40).x, toScreen(0.29, 0.40).y);
+  ctx.lineTo(toScreen(0.34, 0.48).x, toScreen(0.34, 0.48).y);
+  ctx.strokeStyle = outlineColor;
+  ctx.lineWidth = 1;
+  ctx.stroke();
+
+  // Ears (triangular)
+  ctx.beginPath();
+  const ear1 = toScreen(0.16, 0.20);
+  ctx.ellipse(ear1.x, ear1.y, scale * 0.03, scale * 0.04, -0.4, 0, Math.PI * 2);
+  ctx.fillStyle = bodyColor;
+  ctx.fill();
+  ctx.strokeStyle = outlineColor;
+  ctx.stroke();
+
+  ctx.beginPath();
+  const ear2 = toScreen(0.24, 0.18);
+  ctx.ellipse(ear2.x, ear2.y, scale * 0.03, scale * 0.04, 0.2, 0, Math.PI * 2);
+  ctx.fillStyle = bodyColor;
+  ctx.fill();
+  ctx.strokeStyle = outlineColor;
+  ctx.stroke();
+
+  // Front legs
+  ctx.strokeStyle = outlineColor;
+  ctx.lineWidth = scale * 0.025;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(toScreen(0.36, 0.55).x, toScreen(0.36, 0.55).y);
+  ctx.lineTo(toScreen(0.32, 0.78).x, toScreen(0.32, 0.78).y);
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo(toScreen(0.42, 0.55).x, toScreen(0.42, 0.55).y);
+  ctx.lineTo(toScreen(0.40, 0.78).x, toScreen(0.40, 0.78).y);
+  ctx.stroke();
+
+  // Rear legs
+  ctx.beginPath();
+  ctx.moveTo(toScreen(0.60, 0.52).x, toScreen(0.60, 0.52).y);
+  ctx.lineTo(toScreen(0.62, 0.78).x, toScreen(0.62, 0.78).y);
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo(toScreen(0.66, 0.50).x, toScreen(0.66, 0.50).y);
+  ctx.lineTo(toScreen(0.70, 0.78).x, toScreen(0.70, 0.78).y);
+  ctx.stroke();
+
+  // Tail (short, curled)
+  ctx.lineWidth = scale * 0.018;
+  ctx.beginPath();
+  const tp = toScreen(0.72, 0.38);
+  ctx.arc(tp.x, tp.y, scale * 0.04, -0.5, Math.PI * 0.8);
+  ctx.strokeStyle = outlineColor;
+  ctx.stroke();
+
+  // Paw circles
+  const pawPositions = [
+    { x: 0.30, y: 0.82 }, { x: 0.38, y: 0.82 },
+    { x: 0.64, y: 0.82 }, { x: 0.72, y: 0.82 }
+  ];
+  pawPositions.forEach(p => {
+    const pp = toScreen(p.x, p.y);
+    ctx.beginPath();
+    ctx.ellipse(pp.x, pp.y, scale * 0.025, scale * 0.015, 0, 0, Math.PI * 2);
+    ctx.fillStyle = bodyColor;
+    ctx.fill();
+    ctx.strokeStyle = outlineColor;
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  });
+
+  // Eyes
+  ctx.fillStyle = 'rgba(212,160,96,0.2)';
+  const eye1 = toScreen(0.19, 0.31);
+  ctx.beginPath();
+  ctx.arc(eye1.x, eye1.y, scale * 0.008, 0, Math.PI * 2);
+  ctx.fill();
+  const eye2 = toScreen(0.25, 0.30);
+  ctx.beginPath();
+  ctx.arc(eye2.x, eye2.y, scale * 0.008, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Nose
+  ctx.fillStyle = 'rgba(212,160,96,0.25)';
+  const nose = toScreen(0.20, 0.37);
+  ctx.beginPath();
+  ctx.ellipse(nose.x, nose.y, scale * 0.012, scale * 0.008, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.restore();
+}
+
+function drawRegions() {
+  REGIONS.forEach(r => {
+    const p = toScreen(r.cx, r.cy);
+    const isHovered = r === hoveredRegion;
+    const isSelected = r === selectedRegion;
+    const pulse = 0.5 + Math.sin(time * 0.03 + REGIONS.indexOf(r) * 1.2) * 0.2;
+
+    // Region highlight
+    const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, Math.max(r.rx, r.ry) * scale);
+    const alpha = isHovered ? 0.4 : isSelected ? 0.3 : pulse * 0.15;
+    grad.addColorStop(0, r.color + Math.round(alpha * 255).toString(16).padStart(2, '0'));
+    grad.addColorStop(1, 'transparent');
+
+    ctx.beginPath();
+    ctx.ellipse(p.x, p.y, r.rx * scale, r.ry * scale, 0, 0, Math.PI * 2);
+    ctx.fillStyle = grad;
+    ctx.fill();
+
+    // Border
+    if (isHovered || isSelected) {
+      ctx.beginPath();
+      ctx.ellipse(p.x, p.y, r.rx * scale, r.ry * scale, 0, 0, Math.PI * 2);
+      ctx.strokeStyle = r.color + '60';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([4, 4]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    // Label
+    ctx.font = `${isHovered ? '600' : '400'} ${isHovered ? 10 : 8}px JetBrains Mono`;
+    ctx.textAlign = 'center';
+    ctx.fillStyle = isHovered ? r.color : '#666';
+    ctx.fillText(r.name, p.x, p.y + r.ry * scale + 14);
+
+    // Condition count badge
+    const badge = `${r.conditions.length}`;
+    ctx.font = '600 7px JetBrains Mono';
+    const badgeW = ctx.measureText(badge).width + 8;
+    ctx.fillStyle = isHovered ? r.color + '30' : '#1a1a1a';
+    ctx.beginPath();
+    ctx.roundRect(p.x - badgeW / 2, p.y - 6, badgeW, 12, 6);
+    ctx.fill();
+    ctx.fillStyle = isHovered ? r.color : '#555';
+    ctx.textAlign = 'center';
+    ctx.fillText(badge, p.x, p.y + 1);
+  });
+}
+
+function showPanel(region) {
+  const panel = document.getElementById('panel');
+  const content = document.getElementById('panelContent');
+
+  content.innerHTML = `
+    <div class="panel-region">${region.name}</div>
+    ${region.conditions.map(c => `
+      <div class="condition-card">
+        <div class="cc-name">${c.name}</div>
+        <div class="cc-desc">${c.desc}</div>
+        <div>${c.tags.map(t => `<span class="cc-tag" style="background:${t.color}20; color:${t.color}; border:1px solid ${t.color}30;">${t.text}</span>`).join('')}</div>
+      </div>
+    `).join('')}
+    <div class="protocol-title">Care Protocol</div>
+    ${region.protocols.map(p => `<div class="protocol-item">${p}</div>`).join('')}
+  `;
+  panel.classList.add('open');
+}
+
+function closePanel() {
+  document.getElementById('panel').classList.remove('open');
+  selectedRegion = null;
+}
+
+function animate() {
+  ctx.clearRect(0, 0, W * dpr, H * dpr);
+  drawBulldog();
+  drawRegions();
+  time++;
+  requestAnimationFrame(animate);
+}
+animate();
+</script>
+</body>
+</html>

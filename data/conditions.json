@@ -1,0 +1,156 @@
+{
+  "conditions": [
+    {
+      "id": "malassezia",
+      "name": "Malassezia Dermatitis",
+      "category": "infectious",
+      "prevalence": "very_high",
+      "description": "Yeast overgrowth of M. pachydermatis on skin surface",
+      "body_sites": ["skin_folds", "ears", "paws", "ventral", "lip_margins"],
+      "signs": ["yeasty odor", "greasy skin", "erythema", "pruritus", "brown discharge"],
+      "related": ["atopic_dermatitis", "hypothyroidism", "food_allergy", "fold_dermatitis"],
+      "key_fact": "The yeast is the symptom, not the disease"
+    },
+    {
+      "id": "atopic_dermatitis",
+      "name": "Atopic Dermatitis",
+      "category": "allergic",
+      "prevalence": "very_high",
+      "description": "Environmental allergy driving skin barrier dysfunction",
+      "body_sites": ["face", "ears", "paws", "ventral", "axillae"],
+      "signs": ["seasonal pruritus", "face rubbing", "paw licking", "ventral erythema"],
+      "related": ["malassezia", "otitis_externa", "pyoderma", "food_allergy"],
+      "key_fact": "Single most common underlying cause of recurrent Malassezia in bulldogs"
+    },
+    {
+      "id": "fold_dermatitis",
+      "name": "Fold Dermatitis (Intertrigo)",
+      "category": "structural",
+      "prevalence": "very_high",
+      "description": "Inflammation in skin folds from moisture, friction, and microbe trapping",
+      "body_sites": ["facial_folds", "nose_rope", "tail_fold", "vulvar_fold", "lip_folds"],
+      "signs": ["erythema in folds", "malodor", "discharge", "moisture"],
+      "related": ["malassezia", "pyoderma"],
+      "key_fact": "Daily fold care is baseline maintenance, not optional"
+    },
+    {
+      "id": "otitis_externa",
+      "name": "Otitis Externa",
+      "category": "infectious",
+      "prevalence": "high",
+      "description": "Ear canal inflammation, often first sign of atopic dermatitis",
+      "body_sites": ["ears"],
+      "signs": ["head shaking", "ear scratching", "discharge", "odor", "pain"],
+      "related": ["atopic_dermatitis", "malassezia", "food_allergy"],
+      "key_fact": "Yeast otitis is frequently the first clinical manifestation of atopy"
+    },
+    {
+      "id": "pyoderma",
+      "name": "Bacterial Pyoderma",
+      "category": "infectious",
+      "prevalence": "high",
+      "description": "Staphylococcal skin infection, often concurrent with Malassezia",
+      "body_sites": ["ventral", "axillae", "groin", "interdigital"],
+      "signs": ["pustules", "epidermal collarettes", "crusting", "papules"],
+      "related": ["malassezia", "atopic_dermatitis", "hypothyroidism"],
+      "key_fact": "Concurrent staphylococcal pyoderma present in majority of Malassezia cases"
+    },
+    {
+      "id": "food_allergy",
+      "name": "Food Adverse Reaction",
+      "category": "allergic",
+      "prevalence": "moderate",
+      "description": "Immune response to dietary protein sources",
+      "body_sites": ["ears", "paws", "perianal", "ventral"],
+      "signs": ["non-seasonal pruritus", "GI signs", "perianal pruritus", "chronic otitis"],
+      "related": ["atopic_dermatitis", "malassezia", "otitis_externa"],
+      "key_fact": "Elimination diet is the gold standard; blood/saliva tests are unreliable"
+    },
+    {
+      "id": "hypothyroidism",
+      "name": "Hypothyroidism",
+      "category": "endocrine",
+      "prevalence": "moderate",
+      "description": "Thyroid hormone deficiency affecting skin and coat",
+      "body_sites": ["trunk", "tail"],
+      "signs": ["bilateral alopecia", "rat tail", "dull coat", "weight gain", "lethargy"],
+      "related": ["malassezia", "pyoderma"],
+      "key_fact": "Do not diagnose from low Total T4 alone; need Free T4 and TSH"
+    },
+    {
+      "id": "cushings",
+      "name": "Hyperadrenocorticism (Cushing's)",
+      "category": "endocrine",
+      "prevalence": "low",
+      "description": "Excess cortisol production affecting skin and immune function",
+      "body_sites": ["trunk", "ventral"],
+      "signs": ["pot belly", "thin skin", "calcinosis cutis", "PU/PD", "panting"],
+      "related": ["malassezia", "pyoderma", "hypothyroidism"],
+      "key_fact": "Elevated ALP and dilute urine suggest Cushing's on baseline bloodwork"
+    },
+    {
+      "id": "demodicosis",
+      "name": "Demodicosis",
+      "category": "parasitic",
+      "prevalence": "moderate",
+      "description": "Demodex mite overgrowth causing focal or generalized alopecia",
+      "body_sites": ["face", "paws", "trunk"],
+      "signs": ["focal alopecia", "follicular casts", "erythema", "comedones"],
+      "related": ["malassezia", "pyoderma"],
+      "key_fact": "Can mimic or coexist with Malassezia; rule out with deep skin scraping"
+    },
+    {
+      "id": "pododermatitis",
+      "name": "Pedal (Pododermatitis)",
+      "category": "infectious",
+      "prevalence": "high",
+      "description": "Yeast and bacterial infection of interdigital spaces and paw pads",
+      "body_sites": ["paws"],
+      "signs": ["paw licking", "brown staining", "swelling between toes", "lameness"],
+      "related": ["malassezia", "atopic_dermatitis", "demodicosis"],
+      "key_fact": "Moisture between toes is the primary modifiable factor"
+    }
+  ],
+  "body_regions": [
+    { "id": "face", "name": "Face & Facial Folds", "conditions": ["fold_dermatitis", "atopic_dermatitis", "demodicosis"] },
+    { "id": "ears", "name": "Ears", "conditions": ["otitis_externa", "atopic_dermatitis", "food_allergy"] },
+    { "id": "paws", "name": "Paws & Interdigital", "conditions": ["pododermatitis", "malassezia", "atopic_dermatitis", "demodicosis"] },
+    { "id": "ventral", "name": "Ventral / Belly", "conditions": ["atopic_dermatitis", "malassezia", "pyoderma"] },
+    { "id": "skin_folds", "name": "Skin Folds (all)", "conditions": ["fold_dermatitis", "malassezia", "pyoderma"] },
+    { "id": "trunk", "name": "Trunk / Back", "conditions": ["hypothyroidism", "cushings", "demodicosis"] },
+    { "id": "tail", "name": "Tail Fold", "conditions": ["fold_dermatitis", "malassezia"] },
+    { "id": "groin", "name": "Axillae & Groin", "conditions": ["atopic_dermatitis", "malassezia", "pyoderma"] }
+  ],
+  "treatments": {
+    "topical_first_line": [
+      { "name": "Miconazole 2% + Chlorhexidine 2% Shampoo", "evidence": "STRONG", "type": "antifungal" },
+      { "name": "Chlorhexidine 2% (alone)", "evidence": "MODERATE", "type": "antiseptic" },
+      { "name": "Ketoconazole Shampoo 1-2%", "evidence": "MODERATE", "type": "antifungal" },
+      { "name": "Clotrimazole (Lotrimin) Cream", "evidence": "MODERATE", "type": "antifungal" }
+    ],
+    "community_validated": [
+      { "name": "Povidone-Iodine Paw Soaks", "evidence": "SOUND", "type": "antiseptic" },
+      { "name": "Chlorhexidine Spray (daily)", "evidence": "STRONG", "type": "antiseptic" },
+      { "name": "Epsom Salt Paw Soaks", "evidence": "PLAUSIBLE", "type": "astringent" },
+      { "name": "Coconut Oil (non-fold areas)", "evidence": "PARTIAL", "type": "emollient" }
+    ],
+    "systemic": [
+      { "name": "Itraconazole", "evidence": "STRONG", "type": "antifungal" },
+      { "name": "Ketoconazole", "evidence": "STRONG", "type": "antifungal" },
+      { "name": "Cefpodoxime", "evidence": "STRONG", "type": "antibiotic" }
+    ],
+    "itch_management": [
+      { "name": "Oclacitinib (Apoquel)", "evidence": "STRONG", "type": "JAK inhibitor" },
+      { "name": "Lokivetmab (Cytopoint)", "evidence": "STRONG", "type": "monoclonal antibody" }
+    ]
+  },
+  "diagnostic_steps": [
+    { "step": 1, "action": "Cutaneous cytology at all affected sites", "logic": "Confirm Malassezia and/or bacteria" },
+    { "step": 2, "action": "Initiate topical antifungal/antibacterial therapy", "logic": "Treat active infection while workup proceeds" },
+    { "step": 3, "action": "Deep skin scraping to rule out Demodex", "logic": "Demodicosis can mimic or coexist" },
+    { "step": 4, "action": "Baseline bloodwork: CBC, chemistry, urinalysis", "logic": "Screen for metabolic and endocrine disease" },
+    { "step": 5, "action": "Re-evaluate at 3-4 weeks", "logic": "Assess response, repeat cytology" },
+    { "step": 6, "action": "Address underlying cause", "logic": "Allergy workup or endocrine testing based on findings" },
+    { "step": 7, "action": "Establish long-term maintenance protocol", "logic": "Prevent relapse with ongoing care" }
+  ]
+}

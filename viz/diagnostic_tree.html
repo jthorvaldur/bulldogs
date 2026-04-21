@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diagnostic Flowchart — BulldogDerm</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #0a0a0a;
+      color: #d0d0d0;
+      font-family: 'JetBrains Mono', monospace;
+      min-height: 100vh;
+    }
+
+    .header {
+      position: sticky; top: 0; z-index: 10;
+      padding: 16px 24px;
+      background: rgba(10,10,10,0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid #1e1e1e;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .header-left { display: flex; align-items: center; gap: 16px; }
+    .back {
+      font-size: 0.65rem; color: #777; text-decoration: none;
+      letter-spacing: 2px; text-transform: uppercase;
+    }
+    .back:hover { color: #d4a060; }
+    .title {
+      font-size: 0.75rem; font-weight: 600; color: #d4a060;
+      letter-spacing: 3px; text-transform: uppercase;
+    }
+
+    /* Progress */
+    .progress-bar {
+      display: flex; align-items: center; gap: 4px;
+    }
+    .progress-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #222; border: 1px solid #333;
+      transition: all 0.3s;
+    }
+    .progress-dot.active { background: #d4a060; border-color: #d4a060; box-shadow: 0 0 8px rgba(212,160,96,0.4); }
+    .progress-dot.completed { background: #5a9e6f; border-color: #5a9e6f; }
+
+    /* Main content */
+    .flow-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    /* Step cards */
+    .step-card {
+      background: #111;
+      border: 1px solid #1e1e1e;
+      border-radius: 8px;
+      padding: 32px;
+      margin-bottom: 16px;
+      opacity: 0;
+      transform: translateY(12px);
+      animation: cardIn 0.4s ease-out forwards;
+      position: relative;
+    }
+    @keyframes cardIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .step-card.highlight { border-color: #d4a06040; }
+
+    .step-header {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
+    }
+    .step-number {
+      width: 32px; height: 32px; border-radius: 50%;
+      border: 1.5px solid #d4a060; display: flex;
+      align-items: center; justify-content: center;
+      font-size: 0.7rem; font-weight: 700; color: #d4a060;
+      flex-shrink: 0;
+    }
+    .step-number.done { background: #5a9e6f; border-color: #5a9e6f; color: #0a0a0a; }
+    .step-title {
+      font-size: 0.9rem; font-weight: 600; color: #e8e8e8;
+    }
+    .step-phase {
+      font-size: 0.5rem; font-weight: 600; letter-spacing: 2px;
+      text-transform: uppercase; margin-left: auto;
+      padding: 2px 8px; border-radius: 10px;
+    }
+
+    .step-body {
+      font-size: 0.75rem; color: #999; line-height: 1.8; margin-bottom: 20px;
+    }
+
+    .step-evidence {
+      border-left: 3px solid #5b9bd5;
+      padding: 12px 16px;
+      background: rgba(91,155,213,0.05);
+      border-radius: 0 6px 6px 0;
+      font-size: 0.7rem; color: #7ab5cc; margin-bottom: 20px;
+      line-height: 1.7;
+    }
+    .step-evidence strong { color: #5b9bd5; }
+
+    /* Decision branches */
+    .branches {
+      display: grid; gap: 10px;
+      margin-top: 16px;
+    }
+    .branch-btn {
+      background: #0e0e0e;
+      border: 1px solid #2a2a2a;
+      border-radius: 6px;
+      padding: 14px 18px;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s;
+      font-family: inherit;
+      color: #ccc;
+    }
+    .branch-btn:hover {
+      border-color: #d4a060;
+      background: rgba(212,160,96,0.05);
+    }
+    .branch-label {
+      font-size: 0.7rem; font-weight: 600; color: #e0e0e0; margin-bottom: 4px;
+    }
+    .branch-desc {
+      font-size: 0.6rem; color: #777; line-height: 1.5;
+    }
+
+    .connector {
+      width: 1px; height: 24px; background: #333;
+      margin: 0 auto;
+    }
+
+    /* Result card */
+    .result-card {
+      background: linear-gradient(135deg, rgba(212,160,96,0.08) 0%, rgba(90,158,111,0.08) 100%);
+      border: 1px solid rgba(212,160,96,0.2);
+      border-radius: 8px;
+      padding: 32px;
+      text-align: center;
+    }
+    .result-title {
+      font-size: 1rem; font-weight: 700; color: #d4a060;
+      margin-bottom: 12px; letter-spacing: 1px;
+    }
+    .result-body {
+      font-size: 0.75rem; color: #999; line-height: 1.8;
+      max-width: 600px; margin: 0 auto 24px;
+    }
+
+    .restart-btn {
+      background: none; border: 1px solid #d4a06060;
+      color: #d4a060; padding: 8px 20px;
+      font-family: inherit; font-size: 0.65rem;
+      font-weight: 600; letter-spacing: 2px;
+      text-transform: uppercase; border-radius: 6px;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .restart-btn:hover { background: #d4a060; color: #0a0a0a; }
+
+    /* Table in steps */
+    .step-table {
+      width: 100%; border-collapse: collapse;
+      font-size: 0.65rem; margin: 12px 0;
+    }
+    .step-table th {
+      text-align: left; padding: 8px 12px;
+      font-size: 0.5rem; font-weight: 600;
+      letter-spacing: 2px; text-transform: uppercase;
+      color: #666; border-bottom: 1px solid #222;
+      background: #0d0d0d;
+    }
+    .step-table td {
+      padding: 8px 12px; border-bottom: 1px solid #1a1a1a;
+      color: #999; vertical-align: top;
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <a href="../index.html" class="back">Home</a>
+    <div class="title">Diagnostic Flowchart</div>
+  </div>
+  <div class="progress-bar" id="progressBar"></div>
+</div>
+
+<div class="flow-container" id="flowContainer"></div>
+
+<script>
+// Define the diagnostic tree
+const TREE = {
+  start: {
+    step: 1, phase: 'diagnosis', phaseColor: '#5b9bd5',
+    title: 'Perform Cutaneous Cytology',
+    body: 'Cytology is the diagnostic cornerstone. A yeasty smell is suggestive but not diagnostic. The ACVD consensus states that cytology should be performed before initiating antifungal therapy.',
+    evidence: '<strong>Methods:</strong> Acetate tape impression (preferred for most sites), direct slide impression (for moist/exudative areas), superficial skin scraping (dry/scaly skin), or cotton swab (narrow spaces like ear canals).',
+    branches: [
+      { label: 'Malassezia confirmed on cytology', desc: 'Peanut-shaped budding yeast organisms visible under 100x oil immersion', next: 'treat_topical' },
+      { label: 'Bacteria only (no yeast)', desc: 'Cocci and/or rods visible, no Malassezia organisms', next: 'bacteria_only' },
+      { label: 'No organisms found', desc: 'No significant Malassezia or bacteria on cytology', next: 'no_organisms' }
+    ]
+  },
+  treat_topical: {
+    step: 2, phase: 'treatment', phaseColor: '#d4a060',
+    title: 'Initiate Topical Antifungal Therapy',
+    body: 'Start evidence-based topical treatment while the diagnostic workup continues. The primary recommendation is 2% miconazole + 2% chlorhexidine shampoo applied twice weekly with 10-minute contact time.',
+    evidence: '<strong>Gold standard:</strong> Miconazole-CHG combination (Malaseb, Douxo S3 Pyo). Must maintain contact time. Available adjuncts: povidone-iodine paw soaks, chlorhexidine spray for daily maintenance, clotrimazole cream for focal lesions.',
+    table: {
+      headers: ['Agent', 'Evidence', 'Best Use'],
+      rows: [
+        ['Miconazole + CHG shampoo', 'STRONG', 'Primary treatment — twice weekly'],
+        ['Chlorhexidine 2% spray', 'STRONG', 'Daily paw/fold maintenance'],
+        ['Povidone-iodine soaks', 'SOUND', 'Paw soaks, body wipe-down'],
+        ['Clotrimazole cream', 'MODERATE', 'Spot treatment of focal lesions'],
+        ['Epsom salt soaks', 'PLAUSIBLE', 'Interdigital swelling/drying']
+      ]
+    },
+    branches: [
+      { label: 'Continue to concurrent workup', desc: 'Proceed to rule out Demodex and perform baseline bloodwork', next: 'scraping' }
+    ]
+  },
+  bacteria_only: {
+    step: 2, phase: 'treatment', phaseColor: '#d4a060',
+    title: 'Treat Bacterial Pyoderma',
+    body: 'If cytology shows bacteria without significant yeast, treat the bacterial component. Consider topical chlorhexidine therapy or systemic antibiotics based on severity.',
+    evidence: '<strong>Note:</strong> Concurrent staphylococcal pyoderma is present in the majority of dogs with Malassezia. Continue monitoring for yeast — it may appear on re-check cytology.',
+    branches: [
+      { label: 'Proceed to full workup', desc: 'Rule out Demodex and underlying causes', next: 'scraping' }
+    ]
+  },
+  no_organisms: {
+    step: 2, phase: 'diagnosis', phaseColor: '#5b9bd5',
+    title: 'Re-evaluate Clinical Presentation',
+    body: 'If cytology is negative but clinical signs persist, consider: sample technique may need adjustment, lesions may be too dry for impression cytology (try scraping), or the condition may not be infectious.',
+    evidence: '<strong>Important:</strong> Even low numbers of Malassezia can be clinically significant because host hypersensitivity — not organism burden — drives severity in many dogs. Consider re-sampling from different sites.',
+    branches: [
+      { label: 'Re-sample from different sites', desc: 'Try scraping technique or different body locations', next: 'start' },
+      { label: 'Proceed to differential workup', desc: 'Consider non-infectious causes: allergy, endocrine, parasitic', next: 'scraping' }
+    ]
+  },
+  scraping: {
+    step: 3, phase: 'diagnosis', phaseColor: '#5b9bd5',
+    title: 'Deep Skin Scraping — Rule Out Demodex',
+    body: 'Demodicosis can mimic or coexist with Malassezia dermatitis. Focal alopecia, follicular casts, and comedones are suggestive. Deep skin scraping (squeeze skin fold to express mites from follicles) is the diagnostic method.',
+    evidence: '<strong>Key distinction:</strong> Demodex requires deep scraping, not surface impression. Superficial scraping for Sarcoptes (low sensitivity — trial treatment often needed). Also check for flea allergy: flea combing and strict prevention.',
+    branches: [
+      { label: 'Demodex negative — continue workup', desc: 'No mites found on deep scraping', next: 'bloodwork' },
+      { label: 'Demodex positive', desc: 'Demodex mites identified — treat demodicosis concurrently', next: 'demodex_found' }
+    ]
+  },
+  demodex_found: {
+    step: 3, phase: 'treatment', phaseColor: '#d4a060',
+    title: 'Treat Concurrent Demodicosis',
+    body: 'Demodex identified — initiate treatment. Modern isoxazoline parasiticides (fluralaner, sarolaner, afoxolaner) have become first-line. Continue Malassezia topical therapy concurrently.',
+    evidence: '<strong>Dual treatment:</strong> Treat both Demodex and any concurrent Malassezia/pyoderma. Monitor with follow-up skin scrapings monthly until two consecutive negative scrapings.',
+    branches: [
+      { label: 'Continue to baseline bloodwork', desc: 'Proceed to screen for underlying endocrine/metabolic disease', next: 'bloodwork' }
+    ]
+  },
+  bloodwork: {
+    step: 4, phase: 'diagnosis', phaseColor: '#5b9bd5',
+    title: 'Baseline Bloodwork',
+    body: 'Draw CBC with differential, serum chemistry panel, and urinalysis. Screen for metabolic and endocrine disease that may be driving recurrent infections.',
+    evidence: '<strong>What to look for:</strong> Hypercholesterolemia → hypothyroidism. Elevated ALP + dilute urine → Cushing\'s. If endocrine pattern suspected: thyroid panel (Total T4, Free T4 by ED, TSH) or low-dose dex suppression test.',
+    table: {
+      headers: ['Finding', 'Suggests', 'Next Step'],
+      rows: [
+        ['Hypercholesterolemia', 'Hypothyroidism', 'Thyroid panel: T4, Free T4, TSH'],
+        ['Elevated ALP', "Cushing's disease", 'Low-dose dex suppression or ACTH stim'],
+        ['Dilute urine', "Cushing's disease", 'Urine cortisol:creatinine ratio'],
+        ['Normal baseline', 'Allergy likely primary', 'Proceed to 3-4 week re-evaluation']
+      ]
+    },
+    branches: [
+      { label: 'Bloodwork normal — re-evaluate at 3-4 weeks', desc: 'Proceed to clinical re-assessment after initial treatment course', next: 'reeval' },
+      { label: 'Endocrine abnormalities detected', desc: 'Thyroid or adrenal disease suspected', next: 'endocrine' }
+    ]
+  },
+  endocrine: {
+    step: 5, phase: 'treatment', phaseColor: '#cc8844',
+    title: 'Address Endocrine Disease',
+    body: 'If hypothyroidism or hyperadrenocorticism is confirmed, treat the underlying endocrine disease. Skin and coat improvement follows endocrine normalization, though it takes weeks to months.',
+    evidence: '<strong>Hypothyroidism:</strong> Levothyroxine supplementation with monitoring at 4-6 weeks. <strong>Cushing\'s:</strong> Trilostane or mitotane under close veterinary monitoring. Both: continue topical antimicrobial therapy concurrently.',
+    branches: [
+      { label: 'Continue to maintenance protocol', desc: 'Establish long-term management alongside endocrine treatment', next: 'result_maintenance' }
+    ]
+  },
+  reeval: {
+    step: 5, phase: 'diagnosis', phaseColor: '#5b9bd5',
+    title: 'Re-Evaluate at 3-4 Weeks',
+    body: 'Repeat cutaneous cytology at previously affected sites. Assess clinical response: Has the infection cleared? Has the pruritus resolved? Has the alopecia improved?',
+    evidence: '<strong>Decision tree:</strong> Infection clears + pruritus persists → allergy workup. Infection clears + alopecia persists → endocrine workup. Infection fails to resolve → culture and sensitivity, systemic antifungals.',
+    branches: [
+      { label: 'Infection cleared, pruritus persists', desc: 'Yeast gone but dog is still itchy — underlying allergy is active', next: 'allergy_workup' },
+      { label: 'Infection cleared, alopecia persists', desc: 'Yeast resolved but hair not regrowing — consider endocrine cause', next: 'endocrine' },
+      { label: 'Infection not resolving', desc: 'Malassezia still present on cytology despite topical therapy', next: 'systemic' },
+      { label: 'Full clinical resolution', desc: 'Infection cleared, no pruritus, coat improving', next: 'result_maintenance' }
+    ]
+  },
+  allergy_workup: {
+    step: 6, phase: 'diagnosis', phaseColor: '#5b9bd5',
+    title: 'Allergy Investigation',
+    body: 'Environmental atopic dermatitis is the single most common underlying cause of recurrent Malassezia in bulldogs. A structured workup is essential.',
+    evidence: '<strong>Food:</strong> Strict elimination diet trial with novel protein or hydrolyzed diet for 8-12 weeks. No other food, treats, flavored meds. Blood/saliva food allergy tests are unreliable. <strong>Environmental:</strong> Intradermal skin testing (IDT) or serum allergen-specific IgE. Referral to DACVD recommended.',
+    branches: [
+      { label: 'Food allergy confirmed on elimination diet', desc: 'Symptoms resolve on novel diet, return on rechallenge', next: 'result_food' },
+      { label: 'Environmental allergy suspected', desc: 'Seasonal pattern, IDT-positive — consider immunotherapy', next: 'result_immunotherapy' }
+    ]
+  },
+  systemic: {
+    step: 6, phase: 'treatment', phaseColor: '#cc8844',
+    title: 'Systemic Antifungal Therapy',
+    body: 'Reserved for cases where topical therapy alone is insufficient, infection is widespread, involves nail beds, or the patient cannot tolerate bathing.',
+    evidence: '<strong>Itraconazole:</strong> 5 mg/kg once daily for 21-30 days, or pulse therapy (2 consecutive days/week). Often preferred over ketoconazole. <strong>Ketoconazole:</strong> 5-10 mg/kg daily for 21-30 days, higher hepatotoxicity risk. Monitor liver values.',
+    branches: [
+      { label: 'Continue to underlying cause investigation', desc: 'Systemic antifungals treat the symptom — still need to find the cause', next: 'allergy_workup' }
+    ]
+  },
+
+  // Result screens
+  result_maintenance: {
+    step: 7, phase: 'maintenance', phaseColor: '#5a9e6f',
+    title: 'Establish Long-Term Maintenance Protocol',
+    body: 'Recurrence is expected if the underlying cause is chronic. A structured maintenance protocol prevents relapse.',
+    isResult: true,
+    protocol: [
+      { freq: 'Daily', task: 'Skin fold cleaning (all folds). Paw wipe after walks. Visual inspection.', time: '5-10 min' },
+      { freq: 'Twice weekly', task: 'Antimicrobial bath (miconazole-CHG, 10-min contact). Weekly in remission.', time: '30-45 min' },
+      { freq: 'Weekly', task: 'Wash bedding in hot water. Ear inspection and cleaning.', time: 'Weekly' },
+      { freq: 'Monthly', task: 'Body condition score. Supplement review. Environmental review.', time: 'Monthly' },
+      { freq: 'Quarterly', task: 'Veterinary follow-up: cytology of previously affected sites.', time: 'Every 3-4 months' },
+      { freq: 'Annually', task: 'Comprehensive wellness exam with dermatology focus.', time: 'Annually' }
+    ]
+  },
+  result_food: {
+    step: 7, phase: 'maintenance', phaseColor: '#5a9e6f',
+    title: 'Food Allergy Management',
+    body: 'Food allergy confirmed. Long-term management involves strict dietary avoidance of identified triggers plus ongoing skin maintenance protocol.',
+    isResult: true,
+    summary: 'Maintain the novel protein or hydrolyzed diet long-term. No treats, flavored medications, or supplements containing the trigger protein. Continue topical maintenance protocol. Relapses during diet trial may indicate concurrent environmental allergy — consider IDT.'
+  },
+  result_immunotherapy: {
+    step: 7, phase: 'maintenance', phaseColor: '#5a9e6f',
+    title: 'Allergen-Specific Immunotherapy (ASIT)',
+    body: 'The closest thing to a "cure" for environmental allergies. Addresses the underlying immune dysfunction rather than just managing symptoms.',
+    isResult: true,
+    summary: 'Timeline: 4-6 month escalation phase with increasing allergen doses, then monthly maintenance injections or sublingual drops. Success rate: 60-80%. Compliance matters. During escalation, Apoquel/Cytopoint can manage symptoms concurrently. Significant upfront investment, but long-term cost often lower than chronic Apoquel/Cytopoint.'
+  }
+};
+
+let currentPath = [];
+let currentNode = 'start';
+
+function renderProgress() {
+  const bar = document.getElementById('progressBar');
+  bar.innerHTML = '';
+  for (let i = 1; i <= 7; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'progress-dot';
+    const maxStep = Math.max(...currentPath.map(id => TREE[id]?.step || 0), TREE[currentNode]?.step || 0);
+    if (i < TREE[currentNode]?.step) dot.classList.add('completed');
+    if (i === TREE[currentNode]?.step) dot.classList.add('active');
+    bar.appendChild(dot);
+  }
+}
+
+function renderNode(nodeId) {
+  const node = TREE[nodeId];
+  if (!node) return;
+
+  currentNode = nodeId;
+  if (!currentPath.includes(nodeId)) currentPath.push(nodeId);
+  renderProgress();
+
+  const container = document.getElementById('flowContainer');
+
+  // Build card HTML
+  let html = '';
+
+  // Show previous steps dimmed
+  currentPath.forEach((pid, idx) => {
+    if (pid === nodeId) return;
+    const prev = TREE[pid];
+    if (!prev) return;
+    html += `
+      <div class="step-card" style="opacity:0.4; animation:none; padding:16px 24px;">
+        <div class="step-header">
+          <div class="step-number done">&#10003;</div>
+          <div class="step-title" style="font-size:0.75rem;">${prev.title}</div>
+        </div>
+      </div>
+      <div class="connector"></div>
+    `;
+  });
+
+  // Current step
+  html += `<div class="step-card highlight" style="animation-delay:${currentPath.length > 1 ? '0.1s' : '0s'}">`;
+  html += `
+    <div class="step-header">
+      <div class="step-number">${node.step}</div>
+      <div class="step-title">${node.title}</div>
+      <div class="step-phase" style="background:${node.phaseColor}15; color:${node.phaseColor}; border:1px solid ${node.phaseColor}30;">${node.phase}</div>
+    </div>
+    <div class="step-body">${node.body}</div>
+  `;
+
+  if (node.evidence) {
+    html += `<div class="step-evidence">${node.evidence}</div>`;
+  }
+
+  if (node.table) {
+    html += `<table class="step-table"><thead><tr>${node.table.headers.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>`;
+    node.table.rows.forEach(row => {
+      html += `<tr>${row.map(cell => `<td>${cell}</td>`).join('')}</tr>`;
+    });
+    html += '</tbody></table>';
+  }
+
+  if (node.isResult) {
+    // Show result
+    if (node.protocol) {
+      html += `<table class="step-table"><thead><tr><th>Frequency</th><th>Component</th><th>Time</th></tr></thead><tbody>`;
+      node.protocol.forEach(p => {
+        html += `<tr><td style="color:#d4a060; font-weight:600;">${p.freq}</td><td>${p.task}</td><td>${p.time}</td></tr>`;
+      });
+      html += '</tbody></table>';
+    }
+    if (node.summary) {
+      html += `<div class="step-evidence" style="border-left-color:#5a9e6f; background:rgba(90,158,111,0.05); color:#5a9e6f;">${node.summary}</div>`;
+    }
+    html += `
+      <div style="text-align:center; margin-top:24px;">
+        <div style="font-size:0.7rem; color:#d4a060; margin-bottom:12px; font-weight:600;">The yeast is the symptom, not the disease.</div>
+        <button class="restart-btn" onclick="restart()">Start Over</button>
+      </div>
+    `;
+  } else if (node.branches) {
+    html += '<div class="branches">';
+    node.branches.forEach(b => {
+      html += `
+        <button class="branch-btn" onclick="chooseBranch('${b.next}')">
+          <div class="branch-label">${b.label}</div>
+          <div class="branch-desc">${b.desc}</div>
+        </button>
+      `;
+    });
+    html += '</div>';
+  }
+
+  html += '</div>';
+
+  container.innerHTML = html;
+  // Scroll to bottom
+  window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+}
+
+function chooseBranch(nextId) {
+  renderNode(nextId);
+}
+
+function restart() {
+  currentPath = [];
+  currentNode = 'start';
+  renderNode('start');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Initialize
+renderNode('start');
+</script>
+</body>
+</html>
