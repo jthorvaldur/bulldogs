@@ -419,7 +419,7 @@ async function handleSubmit(e) {
 
   try {
     // Call the validation API (Cloudflare Worker)
-    const apiUrl = window.BULLDOGDERM_API || '/api/validate';
+    const apiUrl = window.BULLDOGDERM_API || 'https://bulldogderm-api.bulldogderm.workers.dev/api/validate';
     const resp = await fetch(apiUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
