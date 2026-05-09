@@ -111,3 +111,7 @@ This site follows the same architecture as [morpheme-page](https://github.com/jt
 ## Disclaimer
 
 This site is for educational and informational purposes only. It does not constitute veterinary advice. All diagnostic and treatment decisions should be made in consultation with a licensed veterinarian. Community-contributed content has been evaluated against veterinary literature but has not been reviewed by a veterinary licensing board.
+
+<!-- AUTO:footer -->
+Managed by [policy-orchestrator](https://github.com/jthorvaldur/policy-orchestrator). Category: web-portfolio. 10 commits, last updated 11 minutes ago.
+<!-- /AUTO:footer -->
